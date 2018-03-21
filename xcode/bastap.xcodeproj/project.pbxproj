@@ -1,0 +1,466 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BF7F4BCD206314D900CF5E45 /* TapGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF7F4BCB206314D600CF5E45 /* TapGenerator.cpp */; };
+		BF9B1B212062F8440031E613 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF9B1B1F2062F8440031E613 /* main.cpp */; };
+		BF9B1B392062FCC30031E613 /* libbastap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B1B2B2062FCB20031E613 /* libbastap.a */; };
+		BF9B1B3A2062FCCE0031E613 /* BastapLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF9B1B232062F9410031E613 /* BastapLib.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BF7F4BC62063054600CF5E45 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BF9B1B072062F63D0031E613 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BF9B1B2A2062FCB20031E613;
+			remoteInfo = bastapLib;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BF9B1B0D2062F63D0031E613 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		BF7F4BC920630E1300CF5E45 /* TapGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TapGenerator.h; sourceTree = "<group>"; };
+		BF7F4BCB206314D600CF5E45 /* TapGenerator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TapGenerator.cpp; sourceTree = "<group>"; };
+		BF9B1B0F2062F63D0031E613 /* bastap */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = bastap; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF9B1B1C2062F7F50031E613 /* Bastap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bastap.h; sourceTree = "<group>"; };
+		BF9B1B1F2062F8440031E613 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		BF9B1B232062F9410031E613 /* BastapLib.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BastapLib.cpp; sourceTree = "<group>"; };
+		BF9B1B252062F9840031E613 /* Types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Types.h; sourceTree = "<group>"; };
+		BF9B1B262062FA460031E613 /* FileEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileEntry.h; sourceTree = "<group>"; };
+		BF9B1B2B2062FCB20031E613 /* libbastap.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libbastap.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF9B1B3B2062FD650031E613 /* ByteArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ByteArray.h; sourceTree = "<group>"; };
+		BF9B1B3D2062FE8F0031E613 /* ByteRange.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ByteRange.h; sourceTree = "<group>"; };
+		BF9B1B3F2062FFBB0031E613 /* ExceptionsWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExceptionsWrapper.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BF9B1B0C2062F63D0031E613 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF9B1B392062FCC30031E613 /* libbastap.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF9B1B282062FCB20031E613 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BF7F4BC820630A0F00CF5E45 /* tap */ = {
+			isa = PBXGroup;
+			children = (
+				BF9B1B262062FA460031E613 /* FileEntry.h */,
+				BF7F4BC920630E1300CF5E45 /* TapGenerator.h */,
+			);
+			path = tap;
+			sourceTree = "<group>";
+		};
+		BF7F4BCA206314C300CF5E45 /* tap */ = {
+			isa = PBXGroup;
+			children = (
+				BF7F4BCB206314D600CF5E45 /* TapGenerator.cpp */,
+			);
+			path = tap;
+			sourceTree = "<group>";
+		};
+		BF9B1B062062F63D0031E613 = {
+			isa = PBXGroup;
+			children = (
+				BF9B1B1A2062F7E10031E613 /* include */,
+				BF9B1B192062F7E10031E613 /* source */,
+				BF9B1B102062F63D0031E613 /* Products */,
+				BF9B1B382062FCC30031E613 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		BF9B1B102062F63D0031E613 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BF9B1B0F2062F63D0031E613 /* bastap */,
+				BF9B1B2B2062FCB20031E613 /* libbastap.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BF9B1B192062F7E10031E613 /* source */ = {
+			isa = PBXGroup;
+			children = (
+				BF9B1B1E2062F80C0031E613 /* app */,
+				BF9B1B1D2062F8040031E613 /* library */,
+			);
+			name = source;
+			path = ../source;
+			sourceTree = "<group>";
+		};
+		BF9B1B1A2062F7E10031E613 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				BF9B1B1B2062F7E10031E613 /* bastap */,
+			);
+			name = include;
+			path = ../include;
+			sourceTree = "<group>";
+		};
+		BF9B1B1B2062F7E10031E613 /* bastap */ = {
+			isa = PBXGroup;
+			children = (
+				BF7F4BC820630A0F00CF5E45 /* tap */,
+				BF9B1B3E2062FF7C0031E613 /* detail */,
+				BF9B1B1C2062F7F50031E613 /* Bastap.h */,
+				BF9B1B252062F9840031E613 /* Types.h */,
+				BF9B1B3B2062FD650031E613 /* ByteArray.h */,
+				BF9B1B3D2062FE8F0031E613 /* ByteRange.h */,
+			);
+			path = bastap;
+			sourceTree = "<group>";
+		};
+		BF9B1B1D2062F8040031E613 /* library */ = {
+			isa = PBXGroup;
+			children = (
+				BF7F4BCA206314C300CF5E45 /* tap */,
+				BF9B1B232062F9410031E613 /* BastapLib.cpp */,
+			);
+			path = library;
+			sourceTree = "<group>";
+		};
+		BF9B1B1E2062F80C0031E613 /* app */ = {
+			isa = PBXGroup;
+			children = (
+				BF9B1B1F2062F8440031E613 /* main.cpp */,
+			);
+			path = app;
+			sourceTree = "<group>";
+		};
+		BF9B1B382062FCC30031E613 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BF9B1B3E2062FF7C0031E613 /* detail */ = {
+			isa = PBXGroup;
+			children = (
+				BF9B1B3F2062FFBB0031E613 /* ExceptionsWrapper.h */,
+			);
+			path = detail;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		BF9B1B292062FCB20031E613 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		BF9B1B0E2062F63D0031E613 /* bastap */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF9B1B162062F63D0031E613 /* Build configuration list for PBXNativeTarget "bastap" */;
+			buildPhases = (
+				BF9B1B0B2062F63D0031E613 /* Sources */,
+				BF9B1B0C2062F63D0031E613 /* Frameworks */,
+				BF9B1B0D2062F63D0031E613 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BF7F4BC72063054600CF5E45 /* PBXTargetDependency */,
+			);
+			name = bastap;
+			productName = bastap;
+			productReference = BF9B1B0F2062F63D0031E613 /* bastap */;
+			productType = "com.apple.product-type.tool";
+		};
+		BF9B1B2A2062FCB20031E613 /* bastapLib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF9B1B332062FCB20031E613 /* Build configuration list for PBXNativeTarget "bastapLib" */;
+			buildPhases = (
+				BF9B1B272062FCB20031E613 /* Sources */,
+				BF9B1B282062FCB20031E613 /* Frameworks */,
+				BF9B1B292062FCB20031E613 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = bastapLib;
+			productName = bastapLib;
+			productReference = BF9B1B2B2062FCB20031E613 /* libbastap.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BF9B1B072062F63D0031E613 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = "Juraj Ďurech";
+				TargetAttributes = {
+					BF9B1B0E2062F63D0031E613 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					BF9B1B2A2062FCB20031E613 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = BF9B1B0A2062F63D0031E613 /* Build configuration list for PBXProject "bastap" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = BF9B1B062062F63D0031E613;
+			productRefGroup = BF9B1B102062F63D0031E613 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BF9B1B0E2062F63D0031E613 /* bastap */,
+				BF9B1B2A2062FCB20031E613 /* bastapLib */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BF9B1B0B2062F63D0031E613 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF9B1B212062F8440031E613 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF9B1B272062FCB20031E613 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF9B1B3A2062FCCE0031E613 /* BastapLib.cpp in Sources */,
+				BF7F4BCD206314D900CF5E45 /* TapGenerator.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BF7F4BC72063054600CF5E45 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BF9B1B2A2062FCB20031E613 /* bastapLib */;
+			targetProxy = BF7F4BC62063054600CF5E45 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		BF9B1B142062F63D0031E613 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SYSTEM_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../include";
+			};
+			name = Debug;
+		};
+		BF9B1B152062F63D0031E613 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SYSTEM_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../include";
+			};
+			name = Release;
+		};
+		BF9B1B172062F63D0031E613 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		BF9B1B182062F63D0031E613 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		BF9B1B342062FCB20031E613 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CODE_SIGN_STYLE = Automatic;
+				EXECUTABLE_PREFIX = lib;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				PRODUCT_NAME = bastap;
+			};
+			name = Debug;
+		};
+		BF9B1B352062FCB20031E613 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CODE_SIGN_STYLE = Automatic;
+				EXECUTABLE_PREFIX = lib;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				PRODUCT_NAME = bastap;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BF9B1B0A2062F63D0031E613 /* Build configuration list for PBXProject "bastap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF9B1B142062F63D0031E613 /* Debug */,
+				BF9B1B152062F63D0031E613 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BF9B1B162062F63D0031E613 /* Build configuration list for PBXNativeTarget "bastap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF9B1B172062F63D0031E613 /* Debug */,
+				BF9B1B182062F63D0031E613 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BF9B1B332062FCB20031E613 /* Build configuration list for PBXNativeTarget "bastapLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF9B1B342062FCB20031E613 /* Debug */,
+				BF9B1B352062FCB20031E613 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BF9B1B072062F63D0031E613 /* Project object */;
+}
