@@ -16,8 +16,8 @@
 
 #pragma once
 
-#include <bastap/Types.h>
-#include <bastap/detail/ExceptionsWrapper.h>
+#include <bastap/types/Types.h>
+#include <bastap/types/detail/ExceptionsWrapper.h>
 
 namespace bastap
 {

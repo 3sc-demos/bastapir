@@ -74,7 +74,7 @@ namespace tap
 			return ByteArray();
 		}
 		const size_t raw_size = bytes.size() + 2;
-		if (raw_size > 65536-2) {
+		if (raw_size > 65536) {
 			assert(false);	// too many bytes
 			return ByteArray();
 		}

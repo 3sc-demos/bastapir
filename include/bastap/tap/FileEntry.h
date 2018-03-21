@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <bastap/ByteArray.h>
+#include <bastap/types/ByteArray.h>
 
 namespace bastap
 {

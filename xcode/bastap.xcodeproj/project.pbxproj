@@ -86,6 +86,17 @@
 			path = tap;
 			sourceTree = "<group>";
 		};
+		BF7F4BCF2063283300CF5E45 /* types */ = {
+			isa = PBXGroup;
+			children = (
+				BF9B1B3E2062FF7C0031E613 /* detail */,
+				BF9B1B252062F9840031E613 /* Types.h */,
+				BF9B1B3B2062FD650031E613 /* ByteArray.h */,
+				BF9B1B3D2062FE8F0031E613 /* ByteRange.h */,
+			);
+			path = types;
+			sourceTree = "<group>";
+		};
 		BF9B1B062062F63D0031E613 = {
 			isa = PBXGroup;
 			children = (
@@ -127,12 +138,9 @@
 		BF9B1B1B2062F7E10031E613 /* bastap */ = {
 			isa = PBXGroup;
 			children = (
+				BF7F4BCF2063283300CF5E45 /* types */,
 				BF7F4BC820630A0F00CF5E45 /* tap */,
-				BF9B1B3E2062FF7C0031E613 /* detail */,
 				BF9B1B1C2062F7F50031E613 /* Bastap.h */,
-				BF9B1B252062F9840031E613 /* Types.h */,
-				BF9B1B3B2062FD650031E613 /* ByteArray.h */,
-				BF9B1B3D2062FE8F0031E613 /* ByteRange.h */,
 			);
 			path = bastap;
 			sourceTree = "<group>";
