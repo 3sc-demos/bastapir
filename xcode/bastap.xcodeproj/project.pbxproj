@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BF7F4BCD206314D900CF5E45 /* TapGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF7F4BCB206314D600CF5E45 /* TapGenerator.cpp */; };
+		BF7F4BCD206314D900CF5E45 /* TapArchiveBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF7F4BCB206314D600CF5E45 /* TapArchiveBuilder.cpp */; };
 		BF9B1B212062F8440031E613 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF9B1B1F2062F8440031E613 /* main.cpp */; };
 		BF9B1B392062FCC30031E613 /* libbastap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B1B2B2062FCB20031E613 /* libbastap.a */; };
 		BF9B1B3A2062FCCE0031E613 /* BastapLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF9B1B232062F9410031E613 /* BastapLib.cpp */; };
@@ -36,8 +36,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		BF7F4BC920630E1300CF5E45 /* TapGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TapGenerator.h; sourceTree = "<group>"; };
-		BF7F4BCB206314D600CF5E45 /* TapGenerator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TapGenerator.cpp; sourceTree = "<group>"; };
+		BF7F4BC920630E1300CF5E45 /* TapArchiveBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TapArchiveBuilder.h; sourceTree = "<group>"; };
+		BF7F4BCB206314D600CF5E45 /* TapArchiveBuilder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TapArchiveBuilder.cpp; sourceTree = "<group>"; };
 		BF9B1B0F2062F63D0031E613 /* bastap */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = bastap; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF9B1B1C2062F7F50031E613 /* Bastap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bastap.h; sourceTree = "<group>"; };
 		BF9B1B1F2062F8440031E613 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -73,7 +73,7 @@
 			isa = PBXGroup;
 			children = (
 				BF9B1B262062FA460031E613 /* FileEntry.h */,
-				BF7F4BC920630E1300CF5E45 /* TapGenerator.h */,
+				BF7F4BC920630E1300CF5E45 /* TapArchiveBuilder.h */,
 			);
 			path = tap;
 			sourceTree = "<group>";
@@ -81,7 +81,7 @@
 		BF7F4BCA206314C300CF5E45 /* tap */ = {
 			isa = PBXGroup;
 			children = (
-				BF7F4BCB206314D600CF5E45 /* TapGenerator.cpp */,
+				BF7F4BCB206314D600CF5E45 /* TapArchiveBuilder.cpp */,
 			);
 			path = tap;
 			sourceTree = "<group>";
@@ -95,6 +95,13 @@
 				BF9B1B3D2062FE8F0031E613 /* ByteRange.h */,
 			);
 			path = types;
+			sourceTree = "<group>";
+		};
+		BF7F4BD0206444A800CF5E45 /* bas */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = bas;
 			sourceTree = "<group>";
 		};
 		BF9B1B062062F63D0031E613 = {
@@ -139,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				BF7F4BCF2063283300CF5E45 /* types */,
+				BF7F4BD0206444A800CF5E45 /* bas */,
 				BF7F4BC820630A0F00CF5E45 /* tap */,
 				BF9B1B1C2062F7F50031E613 /* Bastap.h */,
 			);
@@ -276,7 +284,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF9B1B3A2062FCCE0031E613 /* BastapLib.cpp in Sources */,
-				BF7F4BCD206314D900CF5E45 /* TapGenerator.cpp in Sources */,
+				BF7F4BCD206314D900CF5E45 /* TapArchiveBuilder.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

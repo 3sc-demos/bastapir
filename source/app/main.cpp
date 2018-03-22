@@ -24,9 +24,9 @@ int main(int argc, const char * argv[])
 	auto file = FileEntry("ROM", FileEntry::Code, ByteArray({ 0xf3, 0xaf }));
 	file.setParams({0, 32768});
 
-	TapGenerator generator;
-	generator.addFile(file);
-	auto tapContent = generator.generate();
+	TapArchiveBuilder builder;
+	builder.addFile(file);
+	auto tapContent = builder.build();
 	
 	printf(" Tap: ");
 	for (byte b: tapContent) {

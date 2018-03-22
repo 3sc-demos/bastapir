@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-#include <bastap/tap/TapGenerator.h>
+#include <bastap/tap/TapArchiveBuilder.h>
 
 namespace bastap
 {
@@ -22,31 +22,31 @@ namespace tap
 {
 	// MARK: - Public methods
 	
-	TapGenerator::TapGenerator()
+	TapArchiveBuilder::TapArchiveBuilder()
 	{
 	}
 	
 	
-	void TapGenerator::addFile(const FileEntry & entry)
+	void TapArchiveBuilder::addFile(const FileEntry & entry)
 	{
 		_files.push_back(entry);
 	}
 
 	
-	ByteArray TapGenerator::generate() const
+	ByteArray TapArchiveBuilder::build() const
 	{
 		ByteArray out;
 		for (auto && file: _files) {
-			auto headerBytes = generateHeader(file);
-			out.append(generateTapeStream(headerBytes, true, true));
-			out.append(generateTapeStream(file.bytes(), false, true));
+			auto headerBytes = serializeHeader(file);
+			out.append(serializeTapeStream(headerBytes, true, true));
+			out.append(serializeTapeStream(file.bytes(), false, true));
 		}
 		return out;
 	}
 	
 	// MARK: - Low level methods
 	
-	ByteArray TapGenerator::generateHeader(const FileEntry & file)
+	ByteArray TapArchiveBuilder::serializeHeader(const FileEntry & file)
 	{
 		ByteArray header;
 		header.reserve(17);
@@ -67,7 +67,7 @@ namespace tap
 	}
 	
 	
-	ByteArray TapGenerator::generateTapeStream(const ByteRange & bytes, bool is_header, bool is_tap_block)
+	ByteArray TapArchiveBuilder::serializeTapeStream(const ByteRange & bytes, bool is_header, bool is_tap_block)
 	{
 		if (is_header && bytes.size() != 17) {
 			assert(false);	// header must be 17 bytes long

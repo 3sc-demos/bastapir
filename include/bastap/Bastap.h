@@ -16,6 +16,6 @@
 
 #pragma once
 
-#include <bastap/tap/TapGenerator.h>
+#include <bastap/tap/TapArchiveBuilder.h>
 
 
