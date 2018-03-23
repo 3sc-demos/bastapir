@@ -54,6 +54,7 @@
 		BF9B1B3B2062FD650031E613 /* ByteArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ByteArray.h; sourceTree = "<group>"; };
 		BF9B1B3D2062FE8F0031E613 /* ByteRange.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ByteRange.h; sourceTree = "<group>"; };
 		BF9B1B3F2062FFBB0031E613 /* ExceptionsWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExceptionsWrapper.h; sourceTree = "<group>"; };
+		BFD5939E20659D3C00EBA126 /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = readme.md; path = ../readme.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +134,7 @@
 			children = (
 				BF9B1B1A2062F7E10031E613 /* include */,
 				BF9B1B192062F7E10031E613 /* source */,
+				BFD5939D20659D2200EBA126 /* supporting */,
 				BF9B1B102062F63D0031E613 /* Products */,
 				BF9B1B382062FCC30031E613 /* Frameworks */,
 			);
@@ -209,6 +211,14 @@
 				BF9B1B3F2062FFBB0031E613 /* ExceptionsWrapper.h */,
 			);
 			path = detail;
+			sourceTree = "<group>";
+		};
+		BFD5939D20659D2200EBA126 /* supporting */ = {
+			isa = PBXGroup;
+			children = (
+				BFD5939E20659D3C00EBA126 /* readme.md */,
+			);
+			name = supporting;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
