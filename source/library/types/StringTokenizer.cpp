@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-#include <bastap/types/StringTokenizer.h>
+#include <bastapir/types/StringTokenizer.h>
 #include <assert.h>
 #include <ctype.h>
 

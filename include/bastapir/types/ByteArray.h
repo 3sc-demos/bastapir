@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <bastap/types/ByteRange.h>
+#include <bastapir/types/ByteRange.h>
 
 namespace bastap
 {

@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-#include <bastap/tap/TapArchiveBuilder.h>
+#include <bastapir/tap/TapArchiveBuilder.h>
 
 namespace bastap
 {

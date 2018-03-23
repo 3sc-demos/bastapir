@@ -11,7 +11,7 @@
 		BF7F4BD7206456EC00CF5E45 /* BasicConvertor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF7F4BD6206456EC00CF5E45 /* BasicConvertor.cpp */; };
 		BF7F4BDB20645B8F00CF5E45 /* StringTokenizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF7F4BDA20645B8F00CF5E45 /* StringTokenizer.cpp */; };
 		BF9B1B212062F8440031E613 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF9B1B1F2062F8440031E613 /* main.cpp */; };
-		BF9B1B392062FCC30031E613 /* libbastap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B1B2B2062FCB20031E613 /* libbastap.a */; };
+		BF9B1B392062FCC30031E613 /* libbastapir.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B1B2B2062FCB20031E613 /* libbastapir.a */; };
 		BF9B1B3A2062FCCE0031E613 /* BastapLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF9B1B232062F9410031E613 /* BastapLib.cpp */; };
 /* End PBXBuildFile section */
 
@@ -44,13 +44,13 @@
 		BF7F4BD6206456EC00CF5E45 /* BasicConvertor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BasicConvertor.cpp; sourceTree = "<group>"; };
 		BF7F4BD8206458B300CF5E45 /* StringTokenizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StringTokenizer.h; sourceTree = "<group>"; };
 		BF7F4BDA20645B8F00CF5E45 /* StringTokenizer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = StringTokenizer.cpp; sourceTree = "<group>"; };
-		BF9B1B0F2062F63D0031E613 /* bastap */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = bastap; sourceTree = BUILT_PRODUCTS_DIR; };
-		BF9B1B1C2062F7F50031E613 /* Bastap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bastap.h; sourceTree = "<group>"; };
+		BF9B1B0F2062F63D0031E613 /* bastapir */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = bastapir; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF9B1B1C2062F7F50031E613 /* Bastapir.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bastapir.h; sourceTree = "<group>"; };
 		BF9B1B1F2062F8440031E613 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		BF9B1B232062F9410031E613 /* BastapLib.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BastapLib.cpp; sourceTree = "<group>"; };
 		BF9B1B252062F9840031E613 /* Types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Types.h; sourceTree = "<group>"; };
 		BF9B1B262062FA460031E613 /* FileEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileEntry.h; sourceTree = "<group>"; };
-		BF9B1B2B2062FCB20031E613 /* libbastap.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libbastap.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF9B1B2B2062FCB20031E613 /* libbastapir.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libbastapir.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF9B1B3B2062FD650031E613 /* ByteArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ByteArray.h; sourceTree = "<group>"; };
 		BF9B1B3D2062FE8F0031E613 /* ByteRange.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ByteRange.h; sourceTree = "<group>"; };
 		BF9B1B3F2062FFBB0031E613 /* ExceptionsWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExceptionsWrapper.h; sourceTree = "<group>"; };
@@ -61,7 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF9B1B392062FCC30031E613 /* libbastap.a in Frameworks */,
+				BF9B1B392062FCC30031E613 /* libbastapir.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,8 +141,8 @@
 		BF9B1B102062F63D0031E613 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BF9B1B0F2062F63D0031E613 /* bastap */,
-				BF9B1B2B2062FCB20031E613 /* libbastap.a */,
+				BF9B1B0F2062F63D0031E613 /* bastapir */,
+				BF9B1B2B2062FCB20031E613 /* libbastapir.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -160,21 +160,21 @@
 		BF9B1B1A2062F7E10031E613 /* include */ = {
 			isa = PBXGroup;
 			children = (
-				BF9B1B1B2062F7E10031E613 /* bastap */,
+				BF9B1B1B2062F7E10031E613 /* bastapir */,
 			);
 			name = include;
 			path = ../include;
 			sourceTree = "<group>";
 		};
-		BF9B1B1B2062F7E10031E613 /* bastap */ = {
+		BF9B1B1B2062F7E10031E613 /* bastapir */ = {
 			isa = PBXGroup;
 			children = (
 				BF7F4BCF2063283300CF5E45 /* types */,
 				BF7F4BD0206444A800CF5E45 /* bas */,
 				BF7F4BC820630A0F00CF5E45 /* tap */,
-				BF9B1B1C2062F7F50031E613 /* Bastap.h */,
+				BF9B1B1C2062F7F50031E613 /* Bastapir.h */,
 			);
-			path = bastap;
+			path = bastapir;
 			sourceTree = "<group>";
 		};
 		BF9B1B1D2062F8040031E613 /* library */ = {
@@ -224,9 +224,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		BF9B1B0E2062F63D0031E613 /* bastap */ = {
+		BF9B1B0E2062F63D0031E613 /* bastapir */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BF9B1B162062F63D0031E613 /* Build configuration list for PBXNativeTarget "bastap" */;
+			buildConfigurationList = BF9B1B162062F63D0031E613 /* Build configuration list for PBXNativeTarget "bastapir" */;
 			buildPhases = (
 				BF9B1B0B2062F63D0031E613 /* Sources */,
 				BF9B1B0C2062F63D0031E613 /* Frameworks */,
@@ -237,14 +237,14 @@
 			dependencies = (
 				BF7F4BC72063054600CF5E45 /* PBXTargetDependency */,
 			);
-			name = bastap;
+			name = bastapir;
 			productName = bastap;
-			productReference = BF9B1B0F2062F63D0031E613 /* bastap */;
+			productReference = BF9B1B0F2062F63D0031E613 /* bastapir */;
 			productType = "com.apple.product-type.tool";
 		};
-		BF9B1B2A2062FCB20031E613 /* bastapLib */ = {
+		BF9B1B2A2062FCB20031E613 /* bastapirLib */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BF9B1B332062FCB20031E613 /* Build configuration list for PBXNativeTarget "bastapLib" */;
+			buildConfigurationList = BF9B1B332062FCB20031E613 /* Build configuration list for PBXNativeTarget "bastapirLib" */;
 			buildPhases = (
 				BF9B1B272062FCB20031E613 /* Sources */,
 				BF9B1B282062FCB20031E613 /* Frameworks */,
@@ -254,9 +254,9 @@
 			);
 			dependencies = (
 			);
-			name = bastapLib;
+			name = bastapirLib;
 			productName = bastapLib;
-			productReference = BF9B1B2B2062FCB20031E613 /* libbastap.a */;
+			productReference = BF9B1B2B2062FCB20031E613 /* libbastapir.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -278,7 +278,7 @@
 					};
 				};
 			};
-			buildConfigurationList = BF9B1B0A2062F63D0031E613 /* Build configuration list for PBXProject "bastap" */;
+			buildConfigurationList = BF9B1B0A2062F63D0031E613 /* Build configuration list for PBXProject "bastapir" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -290,8 +290,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BF9B1B0E2062F63D0031E613 /* bastap */,
-				BF9B1B2A2062FCB20031E613 /* bastapLib */,
+				BF9B1B0E2062F63D0031E613 /* bastapir */,
+				BF9B1B2A2062FCB20031E613 /* bastapirLib */,
 			);
 		};
 /* End PBXProject section */
@@ -321,7 +321,7 @@
 /* Begin PBXTargetDependency section */
 		BF7F4BC72063054600CF5E45 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = BF9B1B2A2062FCB20031E613 /* bastapLib */;
+			target = BF9B1B2A2062FCB20031E613 /* bastapirLib */;
 			targetProxy = BF7F4BC62063054600CF5E45 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -457,7 +457,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
-				PRODUCT_NAME = bastap;
+				PRODUCT_NAME = bastapir;
 			};
 			name = Debug;
 		};
@@ -470,14 +470,14 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
-				PRODUCT_NAME = bastap;
+				PRODUCT_NAME = bastapir;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		BF9B1B0A2062F63D0031E613 /* Build configuration list for PBXProject "bastap" */ = {
+		BF9B1B0A2062F63D0031E613 /* Build configuration list for PBXProject "bastapir" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BF9B1B142062F63D0031E613 /* Debug */,
@@ -486,7 +486,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BF9B1B162062F63D0031E613 /* Build configuration list for PBXNativeTarget "bastap" */ = {
+		BF9B1B162062F63D0031E613 /* Build configuration list for PBXNativeTarget "bastapir" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BF9B1B172062F63D0031E613 /* Debug */,
@@ -495,7 +495,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BF9B1B332062FCB20031E613 /* Build configuration list for PBXNativeTarget "bastapLib" */ = {
+		BF9B1B332062FCB20031E613 /* Build configuration list for PBXNativeTarget "bastapirLib" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BF9B1B342062FCB20031E613 /* Debug */,

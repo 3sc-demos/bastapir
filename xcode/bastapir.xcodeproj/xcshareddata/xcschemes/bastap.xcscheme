@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BF9B1B0E2062F63D0031E613"
-               BuildableName = "bastap"
-               BlueprintName = "bastap"
-               ReferencedContainer = "container:bastap.xcodeproj">
+               BuildableName = "bastapir"
+               BlueprintName = "bastapir"
+               ReferencedContainer = "container:bastapir.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,9 +34,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BF9B1B0E2062F63D0031E613"
-            BuildableName = "bastap"
-            BlueprintName = "bastap"
-            ReferencedContainer = "container:bastap.xcodeproj">
+            BuildableName = "bastapir"
+            BlueprintName = "bastapir"
+            ReferencedContainer = "container:bastapir.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -58,9 +58,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BF9B1B0E2062F63D0031E613"
-            BuildableName = "bastap"
-            BlueprintName = "bastap"
-            ReferencedContainer = "container:bastap.xcodeproj">
+            BuildableName = "bastapir"
+            BlueprintName = "bastapir"
+            ReferencedContainer = "container:bastapir.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -77,9 +77,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BF9B1B0E2062F63D0031E613"
-            BuildableName = "bastap"
-            BlueprintName = "bastap"
-            ReferencedContainer = "container:bastap.xcodeproj">
+            BuildableName = "bastapir"
+            BlueprintName = "bastapir"
+            ReferencedContainer = "container:bastapir.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

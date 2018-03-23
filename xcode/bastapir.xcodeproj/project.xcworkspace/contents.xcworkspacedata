@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:bastap.xcodeproj">
+      location = "self:/Users/hvge/Dev/my/bastapir/xcode/bastapir.xcodeproj">
    </FileRef>
 </Workspace>
