@@ -16,7 +16,7 @@
 
 #include <bastapir/tap/TapArchiveBuilder.h>
 
-namespace bastap
+namespace bastapir
 {
 namespace tap
 {
@@ -102,6 +102,6 @@ namespace tap
 	}
 	
 	
-} // bastap::tap
+} // bastapir::tap
 } // bastap
 

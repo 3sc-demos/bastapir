@@ -19,7 +19,7 @@
 #include <bastapir/types/Types.h>
 #include <bastapir/types/detail/ExceptionsWrapper.h>
 
-namespace bastap
+namespace bastapir
 {
 	class ByteRange
 	{
@@ -40,8 +40,8 @@ namespace bastap
 		
 		static const size_type	npos = static_cast<size_type>(-1);
 		
-		typedef bastap::detail::ExceptionsWrapper<value_type> _ValueTypeExceptions;
-		typedef bastap::detail::ExceptionsWrapper<ByteRange>  _ByteRangeExceptions;
+		typedef bastapir::detail::ExceptionsWrapper<value_type> _ValueTypeExceptions;
+		typedef bastapir::detail::ExceptionsWrapper<ByteRange>  _ByteRangeExceptions;
 		
 	private:
 		

@@ -16,8 +16,8 @@
 
 #include <bastapir/Bastapir.h>
 
-using namespace bastap;
-using namespace bastap::tap;
+using namespace bastapir;
+using namespace bastapir::tap;
 
 int main(int argc, const char * argv[])
 {

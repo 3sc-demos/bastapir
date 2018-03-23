@@ -18,7 +18,7 @@
 
 #include <bastapir/types/ByteArray.h>
 
-namespace bastap
+namespace bastapir
 {
 namespace tap
 {
@@ -102,5 +102,5 @@ namespace tap
 		ByteArray		_bytes;
 	};
 	
-} // bastap::tap
+} // bastapir::tap
 } // bastap

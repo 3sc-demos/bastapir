@@ -16,12 +16,12 @@
 
 #include <bastapir/bas/BasicConvertor.h>
 
-namespace bastap
+namespace bastapir
 {
 namespace bas
 {
 	// MARK: - Public methods
 	
 	
-} // bastap::bas
+} // bastapir::bas
 } // bastap

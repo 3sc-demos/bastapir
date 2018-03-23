@@ -18,7 +18,7 @@
 
 #include <bastapir/types/ByteArray.h>
 
-namespace bastap
+namespace bastapir
 {
 namespace bas
 {
@@ -48,5 +48,5 @@ namespace bas
 		
 	};
 	
-} // bastap::tap
+} // bastapir::tap
 } // bastap

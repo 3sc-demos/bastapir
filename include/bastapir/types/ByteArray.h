@@ -18,7 +18,7 @@
 
 #include <bastapir/types/ByteRange.h>
 
-namespace bastap
+namespace bastapir
 {
 	class ByteArray : public std::vector<byte>
 	{

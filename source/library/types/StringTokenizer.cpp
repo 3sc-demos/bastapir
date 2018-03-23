@@ -18,7 +18,7 @@
 #include <assert.h>
 #include <ctype.h>
 
-namespace bastap
+namespace bastapir
 {
 
 #define _CHECK_LE() assert(_state.updateLineEnd == false);

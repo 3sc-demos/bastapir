@@ -20,7 +20,7 @@
 #include <vector>
 #include <assert.h>
 
-namespace bastap
+namespace bastapir
 {
 	class StringTokenizer
 	{

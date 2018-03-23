@@ -16,13 +16,13 @@
 
 #pragma once
 
-#if !defined(BASTRAP_NO_EXCEPTIONS)
+#if !defined(BASTAPIR_NO_EXCEPTIONS)
 // Exceptions are enabled
 #include <stdexcept>
 #include <new>
 #endif
 
-namespace bastap
+namespace bastapir
 {
 namespace detail
 {
@@ -30,14 +30,14 @@ namespace detail
 	// MARK: Exceptions wrapper (grabbed from cc7)
 	//
 
-#if defined(BASTRAP_NO_EXCEPTIONS)
+#if defined(BASTAPIR_NO_EXCEPTIONS)
 	// Exceptions are disabled. All errors are treated as assert() for this build.
-	#define __BASTRAP_THROW_EXCEPTION(exception, text)		assert(false)
-	#define __BASTRAP_THROW_EXCEPTION_NOP(exception, text)	assert(false)
+	#define __BASTAPIR_THROW_EXCEPTION(exception, text)		assert(false)
+	#define __BASTAPIR_THROW_EXCEPTION_NOP(exception, text)	assert(false)
 #else
 	// Exeptions are enabled
-	#define __BASTRAP_THROW_EXCEPTION(exception, text)		throw exception(text)
-	#define __BASTRAP_THROW_EXCEPTION_NOP(exception, text)	throw exception()
+	#define __BASTAPIR_THROW_EXCEPTION(exception, text)		throw exception(text)
+	#define __BASTAPIR_THROW_EXCEPTION_NOP(exception, text)	throw exception()
 #endif
 
 	
@@ -46,31 +46,31 @@ namespace detail
 		
 		static T & out_of_range()
 		{
-			__BASTRAP_THROW_EXCEPTION(std::out_of_range, "out of range");
+			__BASTAPIR_THROW_EXCEPTION(std::out_of_range, "out of range");
 			return _foo;
 		}
 		
 		static T & invalid_argument()
 		{
-			__BASTRAP_THROW_EXCEPTION(std::invalid_argument, "invalid argument");
+			__BASTAPIR_THROW_EXCEPTION(std::invalid_argument, "invalid argument");
 			return _foo;
 		}
 		
 		static T & length_error()
 		{
-			__BASTRAP_THROW_EXCEPTION(std::length_error, "length error");
+			__BASTAPIR_THROW_EXCEPTION(std::length_error, "length error");
 			return _foo;
 		}
 		
 		static T & allocation_error()
 		{
-			__BASTRAP_THROW_EXCEPTION_NOP(std::bad_alloc, "not enough memory");
+			__BASTAPIR_THROW_EXCEPTION_NOP(std::bad_alloc, "not enough memory");
 			return _foo;
 		}
 		
 		static T & not_implemented()
 		{
-			__BASTRAP_THROW_EXCEPTION(std::logic_error, "not implemented yet");
+			__BASTAPIR_THROW_EXCEPTION(std::logic_error, "not implemented yet");
 			return _foo;
 		}
 		
@@ -87,5 +87,5 @@ namespace detail
 	template <typename T> T ExceptionsWrapper<T>::_foo;
 	
 	
-} // bastap::detail
+} // bastapir::detail
 } // bastap

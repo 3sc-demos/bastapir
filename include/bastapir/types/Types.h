@@ -20,7 +20,7 @@
 #include <vector>
 #include <assert.h>
 
-namespace bastap
+namespace bastapir
 {
 	typedef uint32_t	U32;
 	typedef uint16_t	U16;
