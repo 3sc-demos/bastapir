@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BF9B1B2A2062FCB20031E613"
-               BuildableName = "libbastap.a"
+               BuildableName = "libbastapir.a"
                BlueprintName = "bastapirLib"
                ReferencedContainer = "container:bastapir.xcodeproj">
             </BuildableReference>
@@ -48,7 +48,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BF9B1B2A2062FCB20031E613"
-            BuildableName = "libbastap.a"
+            BuildableName = "libbastapir.a"
             BlueprintName = "bastapirLib"
             ReferencedContainer = "container:bastapir.xcodeproj">
          </BuildableReference>
@@ -66,7 +66,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BF9B1B2A2062FCB20031E613"
-            BuildableName = "libbastap.a"
+            BuildableName = "libbastapir.a"
             BlueprintName = "bastapirLib"
             ReferencedContainer = "container:bastapir.xcodeproj">
          </BuildableReference>

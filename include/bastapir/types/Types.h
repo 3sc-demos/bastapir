@@ -26,5 +26,7 @@ namespace bastapir
 	typedef uint16_t	U16;
 	typedef uint8_t		U8;
 	typedef uint8_t		byte;
+	
+	typedef std::vector<std::string> StringVector;
 }
 

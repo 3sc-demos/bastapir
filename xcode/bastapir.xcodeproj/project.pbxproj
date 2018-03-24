@@ -9,10 +9,14 @@
 /* Begin PBXBuildFile section */
 		BF7F4BCD206314D900CF5E45 /* TapArchiveBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF7F4BCB206314D600CF5E45 /* TapArchiveBuilder.cpp */; };
 		BF7F4BD7206456EC00CF5E45 /* BasicConvertor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF7F4BD6206456EC00CF5E45 /* BasicConvertor.cpp */; };
-		BF7F4BDB20645B8F00CF5E45 /* StringTokenizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF7F4BDA20645B8F00CF5E45 /* StringTokenizer.cpp */; };
+		BF7F4BDB20645B8F00CF5E45 /* Tokenizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF7F4BDA20645B8F00CF5E45 /* Tokenizer.cpp */; };
 		BF9B1B212062F8440031E613 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF9B1B1F2062F8440031E613 /* main.cpp */; };
 		BF9B1B392062FCC30031E613 /* libbastapir.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B1B2B2062FCB20031E613 /* libbastapir.a */; };
 		BF9B1B3A2062FCCE0031E613 /* BastapLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF9B1B232062F9410031E613 /* BastapLib.cpp */; };
+		BFD593A12065C45800EBA126 /* BasicTextParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD5939F2065C45800EBA126 /* BasicTextParser.cpp */; };
+		BFD593A22065C45800EBA126 /* BasicTextParser.h in Headers */ = {isa = PBXBuildFile; fileRef = BFD593A02065C45800EBA126 /* BasicTextParser.h */; };
+		BFD593A52065C64A00EBA126 /* BasicKeywords.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD593A32065C64A00EBA126 /* BasicKeywords.cpp */; };
+		BFD593A62065C64A00EBA126 /* BasicKeywords.h in Headers */ = {isa = PBXBuildFile; fileRef = BFD593A42065C64A00EBA126 /* BasicKeywords.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,8 +46,8 @@
 		BF7F4BCB206314D600CF5E45 /* TapArchiveBuilder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TapArchiveBuilder.cpp; sourceTree = "<group>"; };
 		BF7F4BD3206455A300CF5E45 /* BasicConvertor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BasicConvertor.h; sourceTree = "<group>"; };
 		BF7F4BD6206456EC00CF5E45 /* BasicConvertor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BasicConvertor.cpp; sourceTree = "<group>"; };
-		BF7F4BD8206458B300CF5E45 /* StringTokenizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StringTokenizer.h; sourceTree = "<group>"; };
-		BF7F4BDA20645B8F00CF5E45 /* StringTokenizer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = StringTokenizer.cpp; sourceTree = "<group>"; };
+		BF7F4BD8206458B300CF5E45 /* Tokenizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tokenizer.h; sourceTree = "<group>"; };
+		BF7F4BDA20645B8F00CF5E45 /* Tokenizer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Tokenizer.cpp; sourceTree = "<group>"; };
 		BF9B1B0F2062F63D0031E613 /* bastapir */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = bastapir; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF9B1B1C2062F7F50031E613 /* Bastapir.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bastapir.h; sourceTree = "<group>"; };
 		BF9B1B1F2062F8440031E613 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -55,6 +59,10 @@
 		BF9B1B3D2062FE8F0031E613 /* ByteRange.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ByteRange.h; sourceTree = "<group>"; };
 		BF9B1B3F2062FFBB0031E613 /* ExceptionsWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExceptionsWrapper.h; sourceTree = "<group>"; };
 		BFD5939E20659D3C00EBA126 /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = readme.md; path = ../readme.md; sourceTree = "<group>"; };
+		BFD5939F2065C45800EBA126 /* BasicTextParser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BasicTextParser.cpp; sourceTree = "<group>"; };
+		BFD593A02065C45800EBA126 /* BasicTextParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BasicTextParser.h; sourceTree = "<group>"; };
+		BFD593A32065C64A00EBA126 /* BasicKeywords.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BasicKeywords.cpp; sourceTree = "<group>"; };
+		BFD593A42065C64A00EBA126 /* BasicKeywords.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BasicKeywords.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,7 +108,7 @@
 				BF9B1B252062F9840031E613 /* Types.h */,
 				BF9B1B3B2062FD650031E613 /* ByteArray.h */,
 				BF9B1B3D2062FE8F0031E613 /* ByteRange.h */,
-				BF7F4BD8206458B300CF5E45 /* StringTokenizer.h */,
+				BF7F4BD8206458B300CF5E45 /* Tokenizer.h */,
 			);
 			path = types;
 			sourceTree = "<group>";
@@ -117,6 +125,10 @@
 			isa = PBXGroup;
 			children = (
 				BF7F4BD6206456EC00CF5E45 /* BasicConvertor.cpp */,
+				BFD593A02065C45800EBA126 /* BasicTextParser.h */,
+				BFD5939F2065C45800EBA126 /* BasicTextParser.cpp */,
+				BFD593A42065C64A00EBA126 /* BasicKeywords.h */,
+				BFD593A32065C64A00EBA126 /* BasicKeywords.cpp */,
 			);
 			path = bas;
 			sourceTree = "<group>";
@@ -124,7 +136,7 @@
 		BF7F4BD920645B7E00CF5E45 /* types */ = {
 			isa = PBXGroup;
 			children = (
-				BF7F4BDA20645B8F00CF5E45 /* StringTokenizer.cpp */,
+				BF7F4BDA20645B8F00CF5E45 /* Tokenizer.cpp */,
 			);
 			path = types;
 			sourceTree = "<group>";
@@ -228,6 +240,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFD593A22065C45800EBA126 /* BasicTextParser.h in Headers */,
+				BFD593A62065C64A00EBA126 /* BasicKeywords.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,8 +335,10 @@
 			files = (
 				BF9B1B3A2062FCCE0031E613 /* BastapLib.cpp in Sources */,
 				BF7F4BCD206314D900CF5E45 /* TapArchiveBuilder.cpp in Sources */,
-				BF7F4BDB20645B8F00CF5E45 /* StringTokenizer.cpp in Sources */,
+				BFD593A52065C64A00EBA126 /* BasicKeywords.cpp in Sources */,
+				BF7F4BDB20645B8F00CF5E45 /* Tokenizer.cpp in Sources */,
 				BF7F4BD7206456EC00CF5E45 /* BasicConvertor.cpp in Sources */,
+				BFD593A12065C45800EBA126 /* BasicTextParser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

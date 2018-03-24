@@ -14,14 +14,55 @@
 // limitations under the License.
 //
 
-#include <bastapir/bas/BasicConvertor.h>
+#pragma once
+
+#include <bastapir/types/Tokenizer.h>
+#include <map>
+#include "BasicKeywords.h"
 
 namespace bastapir
 {
 namespace bas
 {
-	// MARK: - Public methods
 	
+	struct Token
+	{
+		enum Type
+		{
+			Comment,
+			LineNumber,
+			Keyword,
+			Number,
+			String,
+		};
+	};
+	
+	struct Variable
+	{
+		
+	};
+	
+	struct Line
+	{
+		
+	};
+	
+	class BasicTextParser
+	{
+	public:
+		BasicTextParser();
+		
+		
+
+	private:
+		
+		std::string _source_text;
+		Tokenizer _tokenizer;
+		
+		std::map<std::string, Variable> _constants;
+		std::map<std::string, Variable> _variables;
+		BasicKeywords _keywords;
+	};
 	
 } // bastapir::bas
 } // bastapir

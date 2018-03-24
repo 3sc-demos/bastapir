@@ -16,13 +16,11 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-#include <assert.h>
+#include <bastapir/types/Types.h>
 
 namespace bastapir
 {
-	class StringTokenizer
+	class Tokenizer
 	{
 	public:
 		
@@ -56,10 +54,12 @@ namespace bastapir
 			size_t offsetAtLine;
 		};
 		
-		// MARK: - Public methods
+		// MARK: - Constructor
 		
-		StringTokenizer(const iterator begin, const iterator end);
-		StringTokenizer(const Range range);
+		Tokenizer(const Range range);
+		Tokenizer(const iterator begin, const iterator end);
+		
+		// MARK: - Config
 		
 		/// Resets position to the beginning of string
 		void reset();
@@ -71,12 +71,25 @@ namespace bastapir
 		/// Returns value previously set in `setStopAtLineEnd()`
 		bool isStopAtLineEnd() const;
 		
-		/// Stores a whole state of
-		State storeState() const;
+		/// Stores a whole state of tokenizer to structure
+		State state() const;
+		
+		/// Restore previously stored state
 		void restoreState(const State & state);
+		
+		/// Returns information about current position
+		PositionInfo positionInfo() const;
+		
+		// MARK: - Walking over string
 		
 		/// Returns true if tokenizer is at the end of line
 		bool isEnd() const;
+		
+		/// Returns current position iterator.
+		iterator position() const;
+		
+		/// Returns current limits. If `isStopAtLineEnd` is true then returns range of line, otherwise whole string.
+		const Range & limit() const;
 		
 		/// Returns char at current position and moves to the next position.
 		/// If 0 is returned, then we're at the end.
@@ -85,12 +98,21 @@ namespace bastapir
 		/// Returns char at offset to current position, or 0 if offset is out of range.
 		char charAt(difference offset = 0) const;
 		
+		
+		// MARK: - Move forwad / backward
+		
 		/// Moves currsor by given offset. Returns true if that operation is possible, or
 		/// false if offset is out of range.
 		bool movePosition(difference offset = 1);
 		
 		/// Go immediately to the next line
 		bool nextLine();
+		
+		/// Returns range for current line.
+		Range line();
+		
+		
+		// MARK: - Search
 		
 		/// Skip whitespace characters. The current position will end at first non-whitespace character or at the end.
 		bool skipWhitespace();
@@ -99,11 +121,10 @@ namespace bastapir
 		/// in its paramter.
 		bool skipUntil(int (*function)(int));
 		
-		/// 
-		bool searchFor(int (*function)(int));
-
-		/// Returns range for current line.
-		Range line();
+		bool contains(const std::string & string, bool case_insensitive = false);
+		
+		
+		// MARK: - Range capture
 		
 		/// Sets capture begin and end to current position.
 		void resetCapture();
@@ -114,9 +135,6 @@ namespace bastapir
 		/// Returns current capture and then resets capture range to current position
 		Range captureAndReset();
 		
-		PositionInfo positionInfo();
-		
-		
 	private:
 
 		bool isRealEnd() const;
@@ -124,12 +142,10 @@ namespace bastapir
 		char realCharAt(difference offset) const;
 		
 		void updateLineEnd();
-		
-		const iterator	_str_begin;
-		const iterator	_str_end;
+
 		bool			_stop_at_lf;
-		
-		State _state;
+		const Range		_str;
+		State 			_state;
 		
 	};
 }

@@ -14,13 +14,41 @@
 // limitations under the License.
 //
 
-#include <bastapir/bas/BasicConvertor.h>
+#pragma once
+
+#include <bastapir/types/Tokenizer.h>
 
 namespace bastapir
 {
 namespace bas
 {
-	// MARK: - Public methods
+	
+	struct Keyword
+	{
+		std::string primary;
+		std::string alternate;
+		byte code;
+	};
+	
+	struct StrCode
+	{
+		std::string sequence;
+		byte code;
+	};
+	
+	
+	class BasicKeywords
+	{
+	public:		
+		BasicKeywords();
+		
+		byte findKeyword(const Tokenizer::iterator begin, const Tokenizer::iterator end) const;
+		byte findEscapeCode(const Tokenizer::iterator begin, const Tokenizer::iterator end) const;
+		
+	private:
+		std::vector<Keyword> _keywords;
+		std::vector<StrCode> _stringCodes;
+	};
 	
 	
 } // bastapir::bas

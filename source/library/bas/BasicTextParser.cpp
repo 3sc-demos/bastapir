@@ -14,13 +14,14 @@
 // limitations under the License.
 //
 
-#include <bastapir/bas/BasicConvertor.h>
+#include "BasicTextParser.h"
 
 namespace bastapir
 {
 namespace bas
 {
-	// MARK: - Public methods
+
+	
 	
 	
 } // bastapir::bas
