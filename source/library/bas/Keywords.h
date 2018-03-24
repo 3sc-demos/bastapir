@@ -22,11 +22,11 @@ namespace bastapir
 {
 namespace bas
 {
-	class BasicKeywords
+	class Keywords
 	{
 	public:
 		
-		BasicKeywords();
+		Keywords();
 		
 		/// Looks whether there's a BASIC keyword at |begin| begin position. The |end| parameter defines end of
 		/// available string. Returns keyword's code or 0 if string at |begin| is unknown.

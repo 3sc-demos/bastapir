@@ -12,7 +12,7 @@
 		BF592E8C2066A3CA0030CE19 /* SourceFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF592E882066906E0030CE19 /* SourceFile.cpp */; };
 		BF592E8D2066A3DD0030CE19 /* BasicConvertor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF7F4BD6206456EC00CF5E45 /* BasicConvertor.cpp */; };
 		BF592E8E2066A3DD0030CE19 /* BasicTextParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD5939F2065C45800EBA126 /* BasicTextParser.cpp */; };
-		BF592E8F2066A3DD0030CE19 /* BasicKeywords.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD593A32065C64A00EBA126 /* BasicKeywords.cpp */; };
+		BF592E8F2066A3DD0030CE19 /* Keywords.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD593A32065C64A00EBA126 /* Keywords.cpp */; };
 		BF592E902066A3E10030CE19 /* TapArchiveBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF7F4BCB206314D600CF5E45 /* TapArchiveBuilder.cpp */; };
 		BF592E912066A3E40030CE19 /* FileEntry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD593A720666D0000EBA126 /* FileEntry.cpp */; };
 		BF592E922066A3E70030CE19 /* BastapLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF9B1B232062F9410031E613 /* BastapLib.cpp */; };
@@ -56,8 +56,8 @@
 		BFD5939E20659D3C00EBA126 /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = readme.md; path = ../readme.md; sourceTree = "<group>"; };
 		BFD5939F2065C45800EBA126 /* BasicTextParser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BasicTextParser.cpp; sourceTree = "<group>"; };
 		BFD593A02065C45800EBA126 /* BasicTextParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BasicTextParser.h; sourceTree = "<group>"; };
-		BFD593A32065C64A00EBA126 /* BasicKeywords.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BasicKeywords.cpp; sourceTree = "<group>"; };
-		BFD593A42065C64A00EBA126 /* BasicKeywords.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BasicKeywords.h; sourceTree = "<group>"; };
+		BFD593A32065C64A00EBA126 /* Keywords.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Keywords.cpp; sourceTree = "<group>"; };
+		BFD593A42065C64A00EBA126 /* Keywords.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Keywords.h; sourceTree = "<group>"; };
 		BFD593A720666D0000EBA126 /* FileEntry.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FileEntry.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -119,8 +119,8 @@
 				BF7F4BD6206456EC00CF5E45 /* BasicConvertor.cpp */,
 				BFD593A02065C45800EBA126 /* BasicTextParser.h */,
 				BFD5939F2065C45800EBA126 /* BasicTextParser.cpp */,
-				BFD593A42065C64A00EBA126 /* BasicKeywords.h */,
-				BFD593A32065C64A00EBA126 /* BasicKeywords.cpp */,
+				BFD593A42065C64A00EBA126 /* Keywords.h */,
+				BFD593A32065C64A00EBA126 /* Keywords.cpp */,
 			);
 			path = bas;
 			sourceTree = "<group>";
@@ -291,7 +291,7 @@
 				BF592E8D2066A3DD0030CE19 /* BasicConvertor.cpp in Sources */,
 				BF592E902066A3E10030CE19 /* TapArchiveBuilder.cpp in Sources */,
 				BF9B1B212062F8440031E613 /* main.cpp in Sources */,
-				BF592E8F2066A3DD0030CE19 /* BasicKeywords.cpp in Sources */,
+				BF592E8F2066A3DD0030CE19 /* Keywords.cpp in Sources */,
 				BF592E922066A3E70030CE19 /* BastapLib.cpp in Sources */,
 				BF592E8A2066A3CA0030CE19 /* Tokenizer.cpp in Sources */,
 			);

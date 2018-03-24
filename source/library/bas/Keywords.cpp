@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-#include "BasicKeywords.h"
+#include "Keywords.h"
 
 namespace bastapir
 {
@@ -52,13 +52,13 @@ namespace bas
 	
 	// MARK: - Class implementation
 	
-	BasicKeywords::BasicKeywords() :
+	Keywords::Keywords() :
 		_keywords(prepareKeywords()),
 		_escapeCodes(prepareEscapeCodes())
 	{
 	}
 	
-	byte BasicKeywords::findKeyword(Tokenizer::iterator begin, Tokenizer::iterator end) const
+	byte Keywords::findKeyword(Tokenizer::iterator begin, Tokenizer::iterator end) const
 	{
 		for (auto && sc: _keywords) {
 			if (matchStringCI(sc.primary, begin, end)) {
@@ -71,7 +71,7 @@ namespace bas
 		return 0;
 	}
 	
-	byte BasicKeywords::findEscapeCode(Tokenizer::iterator begin, Tokenizer::iterator end) const
+	byte Keywords::findEscapeCode(Tokenizer::iterator begin, Tokenizer::iterator end) const
 	{
 		for (auto && sc: _escapeCodes) {
 			if (matchString(sc.sequence, begin, end)) {
@@ -189,7 +189,7 @@ namespace bas
 		nullptr     , nullptr
 	};
 	
-	std::vector<BasicKeywords::Keyword> BasicKeywords::prepareKeywords()
+	std::vector<Keywords::Keyword> Keywords::prepareKeywords()
 	{
 		byte code = 0xA5;	// first code - RND
 		
@@ -229,7 +229,7 @@ namespace bas
 	};
 	
 	//
-	std::vector<BasicKeywords::EscapeCode> BasicKeywords::prepareEscapeCodes()
+	std::vector<Keywords::EscapeCode> Keywords::prepareEscapeCodes()
 	{
 		byte code = 0x80;
 		

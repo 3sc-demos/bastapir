@@ -17,7 +17,7 @@
 #pragma once
 
 #include <bastapir/common/Tokenizer.h>
-#include "BasicKeywords.h"
+#include "Keywords.h"
 #include <map>
 
 namespace bastapir
@@ -61,7 +61,7 @@ namespace bas
 		
 		std::map<std::string, Variable> _constants;
 		std::map<std::string, Variable> _variables;
-		BasicKeywords _keywords;
+		Keywords _keywords;
 	};
 	
 } // bastapir::bas
