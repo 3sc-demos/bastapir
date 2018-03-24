@@ -16,38 +16,46 @@
 
 #pragma once
 
-#include <bastapir/types/Tokenizer.h>
+#include <bastapir/common/Tokenizer.h>
 
 namespace bastapir
 {
 namespace bas
 {
-	
-	struct Keyword
-	{
-		std::string primary;
-		std::string alternate;
-		byte code;
-	};
-	
-	struct EscapeCode
-	{
-		std::string sequence;
-		byte code;
-	};
-	
-	
 	class BasicKeywords
 	{
-	public:		
+	public:
+		
 		BasicKeywords();
 		
+		/// Looks whether there's a BASIC keyword at |begin| begin position. The |end| parameter defines end of
+		/// available string. Returns keyword's code or 0 if string at |begin| is unknown.
 		byte findKeyword(const Tokenizer::iterator begin, const Tokenizer::iterator end) const;
+		
+		/// Looks whether there's an string escape code at |begin| position. The |end| parameter defines end of
+		/// available string. Returns escape code or 0 if escape sequence is unknown.
 		byte findEscapeCode(const Tokenizer::iterator begin, const Tokenizer::iterator end) const;
 		
 	private:
-		std::vector<Keyword> _keywords;
-		std::vector<EscapeCode> _escapeCodes;
+		
+		struct Keyword
+		{
+			std::string primary;
+			std::string alternate;
+			byte code;
+		};
+		
+		struct EscapeCode
+		{
+			std::string sequence;
+			byte code;
+		};
+		
+		const std::vector<Keyword> _keywords;
+		const std::vector<EscapeCode> _escapeCodes;
+		
+		static std::vector<Keyword> prepareKeywords();
+		static std::vector<EscapeCode> prepareEscapeCodes();
 	};
 	
 	

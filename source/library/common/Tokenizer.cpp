@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-#include <bastapir/types/Tokenizer.h>
+#include <bastapir/common/Tokenizer.h>
 #include <assert.h>
 #include <ctype.h>
 

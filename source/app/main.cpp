@@ -24,7 +24,10 @@ int main(int argc, const char * argv[])
 	auto file = FileEntry("ROM", FileEntry::Code, ByteArray({ 0xf3, 0xaf }));
 	file.setParams({0, 32768});
 
-	TapArchiveBuilder builder;
+	auto logger = FileErrorLogger();
+	logger.setLogPrefix(std::string(argv[0]) + ": ");
+	
+	TapArchiveBuilder builder(&logger);
 	builder.addFile(file);
 	auto tapContent = builder.build();
 	

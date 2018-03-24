@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <bastapir/types/ByteArray.h>
+#include <bastapir/common/SourceFile.h>
 
 namespace bastapir
 {
@@ -26,32 +26,50 @@ namespace tap
 	{
 	public:
 
+		/// Type of file stored on tape.
 		enum Type
 		{
+			/// BASIC program.
 			Program = 0,
+			/// Number array
 			Numbers,
+			/// Character array
 			Characters,
+			/// Sequence of bytes
 			Code
 		};
 		
+		/// Parameters for file header. There are always two U16 values
+		/// serialized in the header. The Params structure is implemented as
+		/// union with more convenient sub-types, declared for each important
+		/// file type.
 		struct Params
 		{
+			static const U16 NO_AUTOSTART = 32768;
+		
+			/// Generic struct, used for header serialization
 			struct _generic
 			{
 				U16 param1;
 				U16 param2;
 			};
-			
+			/// Params for BASIC program.
 			struct _program
 			{
-				U16 startLine;
+				/// Autostart line number for BASIC program.
+				/// If number is >= 32768, proram will not automatically start after load
+				U16 autostartLine;
+				/// Relative offset to variables area. In our case it points to the end
+				/// of BASIC program (e.g. is equal to length of BASIC program in bytes)
 				U16 variableArea;
 			};
-			
+			/// Params for bytes sequence.
 			struct _code
 			{
+				/// Starting address for code block.
 				U16 address;
-				U16 const32768;
+				/// Constant, be always 32768
+				U16 constValue;
 			};
 
 			union {
@@ -61,37 +79,68 @@ namespace tap
 			};
 		};
 		
-		FileEntry(const std::string & name, Type type, const ByteRange & bytes) :
-			_fileName(name),
-			_fileType(type),
-			_fileParams({0, 0}),
-			_bytes(bytes)
+		FileEntry(const std::string & name, Type type, const ByteRange & bytes);
+		
+		/// Returns name of file stored in this entry.
+		const std::string & name() const;
+		
+		/// Returns type of file stored in this entry.
+		const Type type() const;
+		
+		/// Returns reference to stored bytes.
+		const ByteRange bytes() const;
+		
+		
+		// MARK: - Additional properties
+		
+		/// Returns const reference to params object.
+		const Params & params() const;
+		
+		/// Returns non-const reference to params object.
+		Params & params();
+		
+		/// Changes whole Params structure at once.
+		void setParams(const Params params);
+		
+		/// Sets associated source file
+		void setSourceFileInfo(const SourceFileInfo & info);
+		
+		/// Returns associated source file
+		const SourceFileInfo & sourceFileInfo() const;
+		
+		// MARK: - Validation
+		
+		/// Result of file entry header validation.
+		enum ValidationResult
 		{
-		}
+			/// Success
+			OK,
+			
+			/// File Name is too long.
+			WARN_NameTooLong,
+			/// File contains more than 48k bytes. This is warning, TAP still can
+			/// be created, but it may cause problems during file loading
+			WARN_TooManyBytes,
+			/// Starting address, or start + size points to ROM
+			WARN_CodeInROM,
+			
+			/// Everything above this value is error.
+			ERR,
+			
+			/// File contains too many bytes (more than 64k)
+			ERR_TooManyBytes,
+			/// BASIC program is too big.
+			ERR_BasicTooBig,
+			/// Line for BASIC autostart is wrong (0 or more than 9999)
+			ERR_BasicWrongAutostart,
+			/// Variable area is out of range
+			ERR_BasicWrongVariableArea,
+			/// Problem with header for CODE (param2 != 32768)
+			ERR_CodeHeader,
+		};
 		
-		const std::string & name() const {
-			return _fileName;
-		}
-		
-		const Type type() const {
-			return _fileType;
-		}
-		
-		const ByteRange bytes() const {
-			return _bytes.byteRange();
-		}
-		
-		const Params & params() const {
-			return _fileParams;
-		}
-		
-		Params & params() {
-			return _fileParams;
-		}
-		
-		void setParams(const Params params) {
-			_fileParams = params;
-		}
+		/// Validates file entry object and returns appropriate error code or OK.
+		ValidationResult validate() const;
 		
 	private:
 		
@@ -100,6 +149,8 @@ namespace tap
 		Params			_fileParams;
 		
 		ByteArray		_bytes;
+		
+		SourceFileInfo	_sourceFile;
 	};
 	
 } // bastapir::tap

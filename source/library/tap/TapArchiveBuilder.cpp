@@ -22,13 +22,21 @@ namespace tap
 {
 	// MARK: - Public methods
 	
-	TapArchiveBuilder::TapArchiveBuilder()
+	TapArchiveBuilder::TapArchiveBuilder(ErrorLogging * log) :
+		_logging(log)
 	{
+		assert(_logging != nullptr);
+	}
+
+	void TapArchiveBuilder::setSourceFileInfo(const SourceFileInfo & info) {
+		_sourceFileInfo = info;
 	}
 	
+	const SourceFileInfo & TapArchiveBuilder::sourceFileInfo() const {
+		return _sourceFileInfo;
+	}
 	
-	void TapArchiveBuilder::addFile(const FileEntry & entry)
-	{
+	void TapArchiveBuilder::addFile(const FileEntry & entry) {
 		_files.push_back(entry);
 	}
 
@@ -37,6 +45,14 @@ namespace tap
 	{
 		ByteArray out;
 		for (auto && file: _files) {
+			auto validationResult = file.validate();
+			if (validationResult != FileEntry::OK) {
+				reportError(file, validationResult);
+				if (validationResult > FileEntry::ERR) {
+					// TODO: throw exception...
+					return ByteArray();
+				}
+			}
 			auto headerBytes = serializeHeader(file);
 			out.append(serializeTapeStream(headerBytes, true, true));
 			out.append(serializeTapeStream(file.bytes(), false, true));
@@ -51,8 +67,10 @@ namespace tap
 		ByteArray header;
 		header.reserve(17);
 		
+		// Crop name to 10 chars, or extend with blanks if name is shorter.
 		ByteArray name(MakeRange(file.name()));
 		name.resize(10, ' ');
+		
 		U16 length = file.bytes().size() & 0xFFFF;
 		
 		header.append((byte)file.type());						// 0.  type
@@ -101,6 +119,44 @@ namespace tap
 		return out;
 	}
 	
+	// MARK: - Private
+	
+	void TapArchiveBuilder::reportError(const FileEntry & entry, FileEntry::ValidationResult result) const
+	{
+		ErrorInfo ei;
+		if (entry.sourceFileInfo().hasInfo()) {
+			ei.sourceFile = entry.sourceFileInfo().path;
+		} else {
+			ei.sourceFile = _sourceFileInfo.path;
+		}
+		auto ename = entry.name();
+		auto esize = std::to_string(entry.bytes().size());
+		
+		switch (result)
+		{
+			// Warnings
+			case FileEntry::WARN_NameTooLong:
+				_logging->warning(ei, "TAP file's name is too long: `" + ename + "`"); break;
+			case FileEntry::WARN_TooManyBytes:
+				_logging->warning(ei, "TAP file's size is longer than 48kB. File: `" + ename + "`, Size: " + esize); break;
+			case FileEntry::WARN_CodeInROM:
+				_logging->warning(ei, "TAP code block will be loaded to ROM. File: `" + ename + "`"); break;
+				
+			// Errors
+			case FileEntry::ERR_TooManyBytes:
+				_logging->error(ei, "TAP file's size is too long. File: `" + ename + "`, Size: " + esize); break;
+			case FileEntry::ERR_BasicTooBig:
+				_logging->error(ei, "BASIC file is too big. File: `" + ename + "`, Size: " + esize); break;
+			case FileEntry::ERR_BasicWrongAutostart:
+				_logging->error(ei, "Autostart for BASIC program is wrong. File: `" + ename + "`, Line: " + std::to_string(entry.params().program.autostartLine)); break;
+			case FileEntry::ERR_BasicWrongVariableArea:
+				_logging->error(ei, "Offset for BASIC variables area is wrong. File: `" + ename +"`"); break;
+			case FileEntry::ERR_CodeHeader:
+				_logging->error(ei, "Header for TAP code block is wrong. File: `" + ename +"`"); break;
+				
+			default: break;
+		}
+	}
 	
 } // bastapir::tap
 } // bastapir

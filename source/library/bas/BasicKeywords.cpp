@@ -21,11 +21,9 @@ namespace bastapir
 namespace bas
 {
 	// MARK: - Support functions
-
-	static std::vector<Keyword> prepareKeywords();
-	static std::vector<EscapeCode> prepareEscapeCodes();
 	
-	static bool matchString(const std::string & str, Tokenizer::iterator begin, Tokenizer::iterator end) {
+	static bool matchString(const std::string & str, Tokenizer::iterator begin, Tokenizer::iterator end)
+	{
 		for (char c: str) {
 			if (begin == end) {
 				return false;
@@ -37,7 +35,8 @@ namespace bas
 		return true;
 	}
 	
-	static bool matchStringCI(const std::string & str, Tokenizer::iterator begin, Tokenizer::iterator end) {
+	static bool matchStringCI(const std::string & str, Tokenizer::iterator begin, Tokenizer::iterator end)
+	{
 		for (char c: str) {
 			if (begin == end) {
 				return false;
@@ -49,7 +48,6 @@ namespace bas
 		}
 		return true;
 	}
-	
 	
 	
 	// MARK: - Class implementation
@@ -191,7 +189,7 @@ namespace bas
 		nullptr     , nullptr
 	};
 	
-	static std::vector<Keyword> prepareKeywords()
+	std::vector<BasicKeywords::Keyword> BasicKeywords::prepareKeywords()
 	{
 		byte code = 0xA5;	// first code - RND
 		
@@ -231,7 +229,7 @@ namespace bas
 	};
 	
 	//
-	static std::vector<EscapeCode> prepareEscapeCodes()
+	std::vector<BasicKeywords::EscapeCode> BasicKeywords::prepareEscapeCodes()
 	{
 		byte code = 0x80;
 		

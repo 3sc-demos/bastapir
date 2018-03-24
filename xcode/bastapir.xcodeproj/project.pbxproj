@@ -7,27 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BF7F4BCD206314D900CF5E45 /* TapArchiveBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF7F4BCB206314D600CF5E45 /* TapArchiveBuilder.cpp */; };
-		BF7F4BD7206456EC00CF5E45 /* BasicConvertor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF7F4BD6206456EC00CF5E45 /* BasicConvertor.cpp */; };
-		BF7F4BDB20645B8F00CF5E45 /* Tokenizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF7F4BDA20645B8F00CF5E45 /* Tokenizer.cpp */; };
+		BF592E8A2066A3CA0030CE19 /* Tokenizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF7F4BDA20645B8F00CF5E45 /* Tokenizer.cpp */; };
+		BF592E8B2066A3CA0030CE19 /* ErrorLogging.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF592E8520668AF80030CE19 /* ErrorLogging.cpp */; };
+		BF592E8C2066A3CA0030CE19 /* SourceFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF592E882066906E0030CE19 /* SourceFile.cpp */; };
+		BF592E8D2066A3DD0030CE19 /* BasicConvertor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF7F4BD6206456EC00CF5E45 /* BasicConvertor.cpp */; };
+		BF592E8E2066A3DD0030CE19 /* BasicTextParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD5939F2065C45800EBA126 /* BasicTextParser.cpp */; };
+		BF592E8F2066A3DD0030CE19 /* BasicKeywords.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD593A32065C64A00EBA126 /* BasicKeywords.cpp */; };
+		BF592E902066A3E10030CE19 /* TapArchiveBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF7F4BCB206314D600CF5E45 /* TapArchiveBuilder.cpp */; };
+		BF592E912066A3E40030CE19 /* FileEntry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD593A720666D0000EBA126 /* FileEntry.cpp */; };
+		BF592E922066A3E70030CE19 /* BastapLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF9B1B232062F9410031E613 /* BastapLib.cpp */; };
+		BF592E942066A4AB0030CE19 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BF592E932066A4AB0030CE19 /* libc++.tbd */; };
 		BF9B1B212062F8440031E613 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF9B1B1F2062F8440031E613 /* main.cpp */; };
-		BF9B1B392062FCC30031E613 /* libbastapir.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B1B2B2062FCB20031E613 /* libbastapir.a */; };
-		BF9B1B3A2062FCCE0031E613 /* BastapLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF9B1B232062F9410031E613 /* BastapLib.cpp */; };
-		BFD593A12065C45800EBA126 /* BasicTextParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD5939F2065C45800EBA126 /* BasicTextParser.cpp */; };
-		BFD593A22065C45800EBA126 /* BasicTextParser.h in Headers */ = {isa = PBXBuildFile; fileRef = BFD593A02065C45800EBA126 /* BasicTextParser.h */; };
-		BFD593A52065C64A00EBA126 /* BasicKeywords.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFD593A32065C64A00EBA126 /* BasicKeywords.cpp */; };
-		BFD593A62065C64A00EBA126 /* BasicKeywords.h in Headers */ = {isa = PBXBuildFile; fileRef = BFD593A42065C64A00EBA126 /* BasicKeywords.h */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		BF7F4BC62063054600CF5E45 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BF9B1B072062F63D0031E613 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BF9B1B2A2062FCB20031E613;
-			remoteInfo = bastapLib;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		BF9B1B0D2062F63D0031E613 /* CopyFiles */ = {
@@ -42,6 +33,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BF592E84206688440030CE19 /* ErrorLogging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ErrorLogging.h; sourceTree = "<group>"; };
+		BF592E8520668AF80030CE19 /* ErrorLogging.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ErrorLogging.cpp; sourceTree = "<group>"; };
+		BF592E8720668EAB0030CE19 /* SourceFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SourceFile.h; sourceTree = "<group>"; };
+		BF592E882066906E0030CE19 /* SourceFile.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SourceFile.cpp; sourceTree = "<group>"; };
+		BF592E932066A4AB0030CE19 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		BF7F4BC920630E1300CF5E45 /* TapArchiveBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TapArchiveBuilder.h; sourceTree = "<group>"; };
 		BF7F4BCB206314D600CF5E45 /* TapArchiveBuilder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TapArchiveBuilder.cpp; sourceTree = "<group>"; };
 		BF7F4BD3206455A300CF5E45 /* BasicConvertor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BasicConvertor.h; sourceTree = "<group>"; };
@@ -54,7 +50,6 @@
 		BF9B1B232062F9410031E613 /* BastapLib.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BastapLib.cpp; sourceTree = "<group>"; };
 		BF9B1B252062F9840031E613 /* Types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Types.h; sourceTree = "<group>"; };
 		BF9B1B262062FA460031E613 /* FileEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileEntry.h; sourceTree = "<group>"; };
-		BF9B1B2B2062FCB20031E613 /* libbastapir.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libbastapir.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF9B1B3B2062FD650031E613 /* ByteArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ByteArray.h; sourceTree = "<group>"; };
 		BF9B1B3D2062FE8F0031E613 /* ByteRange.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ByteRange.h; sourceTree = "<group>"; };
 		BF9B1B3F2062FFBB0031E613 /* ExceptionsWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExceptionsWrapper.h; sourceTree = "<group>"; };
@@ -63,6 +58,7 @@
 		BFD593A02065C45800EBA126 /* BasicTextParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BasicTextParser.h; sourceTree = "<group>"; };
 		BFD593A32065C64A00EBA126 /* BasicKeywords.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BasicKeywords.cpp; sourceTree = "<group>"; };
 		BFD593A42065C64A00EBA126 /* BasicKeywords.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BasicKeywords.h; sourceTree = "<group>"; };
+		BFD593A720666D0000EBA126 /* FileEntry.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FileEntry.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,14 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF9B1B392062FCC30031E613 /* libbastapir.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BF9B1B282062FCB20031E613 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				BF592E942066A4AB0030CE19 /* libc++.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,12 +85,13 @@
 		BF7F4BCA206314C300CF5E45 /* tap */ = {
 			isa = PBXGroup;
 			children = (
+				BFD593A720666D0000EBA126 /* FileEntry.cpp */,
 				BF7F4BCB206314D600CF5E45 /* TapArchiveBuilder.cpp */,
 			);
 			path = tap;
 			sourceTree = "<group>";
 		};
-		BF7F4BCF2063283300CF5E45 /* types */ = {
+		BF7F4BCF2063283300CF5E45 /* common */ = {
 			isa = PBXGroup;
 			children = (
 				BF9B1B3E2062FF7C0031E613 /* detail */,
@@ -109,8 +99,10 @@
 				BF9B1B3B2062FD650031E613 /* ByteArray.h */,
 				BF9B1B3D2062FE8F0031E613 /* ByteRange.h */,
 				BF7F4BD8206458B300CF5E45 /* Tokenizer.h */,
+				BF592E84206688440030CE19 /* ErrorLogging.h */,
+				BF592E8720668EAB0030CE19 /* SourceFile.h */,
 			);
-			path = types;
+			path = common;
 			sourceTree = "<group>";
 		};
 		BF7F4BD0206444A800CF5E45 /* bas */ = {
@@ -133,12 +125,14 @@
 			path = bas;
 			sourceTree = "<group>";
 		};
-		BF7F4BD920645B7E00CF5E45 /* types */ = {
+		BF7F4BD920645B7E00CF5E45 /* common */ = {
 			isa = PBXGroup;
 			children = (
 				BF7F4BDA20645B8F00CF5E45 /* Tokenizer.cpp */,
+				BF592E8520668AF80030CE19 /* ErrorLogging.cpp */,
+				BF592E882066906E0030CE19 /* SourceFile.cpp */,
 			);
-			path = types;
+			path = common;
 			sourceTree = "<group>";
 		};
 		BF9B1B062062F63D0031E613 = {
@@ -156,7 +150,6 @@
 			isa = PBXGroup;
 			children = (
 				BF9B1B0F2062F63D0031E613 /* bastapir */,
-				BF9B1B2B2062FCB20031E613 /* libbastapir.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -183,7 +176,7 @@
 		BF9B1B1B2062F7E10031E613 /* bastapir */ = {
 			isa = PBXGroup;
 			children = (
-				BF7F4BCF2063283300CF5E45 /* types */,
+				BF7F4BCF2063283300CF5E45 /* common */,
 				BF7F4BD0206444A800CF5E45 /* bas */,
 				BF7F4BC820630A0F00CF5E45 /* tap */,
 				BF9B1B1C2062F7F50031E613 /* Bastapir.h */,
@@ -194,7 +187,7 @@
 		BF9B1B1D2062F8040031E613 /* library */ = {
 			isa = PBXGroup;
 			children = (
-				BF7F4BD920645B7E00CF5E45 /* types */,
+				BF7F4BD920645B7E00CF5E45 /* common */,
 				BF7F4BD5206456D400CF5E45 /* bas */,
 				BF7F4BCA206314C300CF5E45 /* tap */,
 				BF9B1B232062F9410031E613 /* BastapLib.cpp */,
@@ -213,6 +206,7 @@
 		BF9B1B382062FCC30031E613 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BF592E932066A4AB0030CE19 /* libc++.tbd */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -235,18 +229,6 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		BF9B1B292062FCB20031E613 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BFD593A22065C45800EBA126 /* BasicTextParser.h in Headers */,
-				BFD593A62065C64A00EBA126 /* BasicKeywords.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
 		BF9B1B0E2062F63D0031E613 /* bastapir */ = {
 			isa = PBXNativeTarget;
@@ -259,29 +241,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				BF7F4BC72063054600CF5E45 /* PBXTargetDependency */,
 			);
 			name = bastapir;
 			productName = bastap;
 			productReference = BF9B1B0F2062F63D0031E613 /* bastapir */;
 			productType = "com.apple.product-type.tool";
-		};
-		BF9B1B2A2062FCB20031E613 /* bastapirLib */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = BF9B1B332062FCB20031E613 /* Build configuration list for PBXNativeTarget "bastapirLib" */;
-			buildPhases = (
-				BF9B1B272062FCB20031E613 /* Sources */,
-				BF9B1B282062FCB20031E613 /* Frameworks */,
-				BF9B1B292062FCB20031E613 /* Headers */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = bastapirLib;
-			productName = bastapLib;
-			productReference = BF9B1B2B2062FCB20031E613 /* libbastapir.a */;
-			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
 
@@ -293,10 +257,6 @@
 				ORGANIZATIONNAME = "Juraj Ďurech";
 				TargetAttributes = {
 					BF9B1B0E2062F63D0031E613 = {
-						CreatedOnToolsVersion = 9.2;
-						ProvisioningStyle = Automatic;
-					};
-					BF9B1B2A2062FCB20031E613 = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
@@ -315,7 +275,6 @@
 			projectRoot = "";
 			targets = (
 				BF9B1B0E2062F63D0031E613 /* bastapir */,
-				BF9B1B2A2062FCB20031E613 /* bastapirLib */,
 			);
 		};
 /* End PBXProject section */
@@ -325,32 +284,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF592E8C2066A3CA0030CE19 /* SourceFile.cpp in Sources */,
+				BF592E912066A3E40030CE19 /* FileEntry.cpp in Sources */,
+				BF592E8B2066A3CA0030CE19 /* ErrorLogging.cpp in Sources */,
+				BF592E8E2066A3DD0030CE19 /* BasicTextParser.cpp in Sources */,
+				BF592E8D2066A3DD0030CE19 /* BasicConvertor.cpp in Sources */,
+				BF592E902066A3E10030CE19 /* TapArchiveBuilder.cpp in Sources */,
 				BF9B1B212062F8440031E613 /* main.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BF9B1B272062FCB20031E613 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BF9B1B3A2062FCCE0031E613 /* BastapLib.cpp in Sources */,
-				BF7F4BCD206314D900CF5E45 /* TapArchiveBuilder.cpp in Sources */,
-				BFD593A52065C64A00EBA126 /* BasicKeywords.cpp in Sources */,
-				BF7F4BDB20645B8F00CF5E45 /* Tokenizer.cpp in Sources */,
-				BF7F4BD7206456EC00CF5E45 /* BasicConvertor.cpp in Sources */,
-				BFD593A12065C45800EBA126 /* BasicTextParser.cpp in Sources */,
+				BF592E8F2066A3DD0030CE19 /* BasicKeywords.cpp in Sources */,
+				BF592E922066A3E70030CE19 /* BastapLib.cpp in Sources */,
+				BF592E8A2066A3CA0030CE19 /* Tokenizer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		BF7F4BC72063054600CF5E45 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BF9B1B2A2062FCB20031E613 /* bastapirLib */;
-			targetProxy = BF7F4BC62063054600CF5E45 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		BF9B1B142062F63D0031E613 /* Debug */ = {
@@ -474,32 +421,6 @@
 			};
 			name = Release;
 		};
-		BF9B1B342062FCB20031E613 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CODE_SIGN_STYLE = Automatic;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_ENABLE_CPP_EXCEPTIONS = YES;
-				GCC_ENABLE_CPP_RTTI = YES;
-				PRODUCT_NAME = bastapir;
-			};
-			name = Debug;
-		};
-		BF9B1B352062FCB20031E613 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CODE_SIGN_STYLE = Automatic;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_ENABLE_CPP_EXCEPTIONS = YES;
-				GCC_ENABLE_CPP_RTTI = YES;
-				PRODUCT_NAME = bastapir;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -517,15 +438,6 @@
 			buildConfigurations = (
 				BF9B1B172062F63D0031E613 /* Debug */,
 				BF9B1B182062F63D0031E613 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		BF9B1B332062FCB20031E613 /* Build configuration list for PBXNativeTarget "bastapirLib" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				BF9B1B342062FCB20031E613 /* Debug */,
-				BF9B1B352062FCB20031E613 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

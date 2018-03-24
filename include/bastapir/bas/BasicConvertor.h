@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <bastapir/types/ByteArray.h>
+#include <bastapir/common/ByteArray.h>
 
 namespace bastapir
 {
@@ -26,11 +26,6 @@ namespace bas
 	{
 		std::string 	programName;
 		U16 			autoStart;
-
-		BasicParams() :
-			autoStart(0)
-		{
-		}
 	};
 	
 	class BasicConvertor

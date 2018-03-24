@@ -16,9 +16,9 @@
 
 #pragma once
 
-#include <bastapir/types/Tokenizer.h>
-#include <map>
+#include <bastapir/common/Tokenizer.h>
 #include "BasicKeywords.h"
+#include <map>
 
 namespace bastapir
 {

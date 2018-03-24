@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <bastapir/common/ErrorLogging.h>
 #include <bastapir/tap/FileEntry.h>
 
 namespace bastapir
@@ -26,12 +27,19 @@ namespace tap
 	{
 	public:
 		
-		TapArchiveBuilder();
+		TapArchiveBuilder(ErrorLogging * log);
 		
-		/// Adds file entry into the generator.
+		/// Set associated source file to this builder.
+		void setSourceFileInfo(const SourceFileInfo & info);
+		
+		/// Returns associated source file.
+		const SourceFileInfo & sourceFileInfo() const;
+		
+		/// Adds file |entry| into the builder.
 		void addFile(const FileEntry & entry);
 		
-		/// Generates a whole "TAP" file for all previously added file entries.
+		/// Builds a whole "TAP" file for all previously added file entries.
+		/// If empty array is returned, then there was a problem with file added to the builder.
 		ByteArray build() const;
 
 		/// Generates "raw" byte stream for given |bytes|. Parameter |is_header| affects whether the bytes contains
@@ -40,13 +48,22 @@ namespace tap
 		/// is generated.
 		static ByteArray serializeTapeStream(const ByteRange & bytes, bool is_header, bool is_tap_block = true);
 		
-		/// Generates 17 bytes header for given file
+		/// Generates 17 bytes header for given file entry.
 		static ByteArray serializeHeader(const FileEntry & file);
 
 	private:
 		
-		std::vector<FileEntry> _files;
+		/// Reports error to logger
+		void reportError(const FileEntry & entry, FileEntry::ValidationResult result) const;
 		
+		/// Information about what's source of this TAP file.
+		SourceFileInfo _sourceFileInfo;
+		
+		/// Logger
+		ErrorLogging * _logging;
+		
+		/// Files added to the TAP stream
+		std::vector<FileEntry> _files;
 	};
 	
 } // bastapir::tap

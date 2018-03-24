@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <bastapir/types/Types.h>
+#include <bastapir/common/Types.h>
 
 namespace bastapir
 {
@@ -50,8 +50,8 @@ namespace bastapir
 		
 		struct PositionInfo
 		{
-			size_t lineNumber;
-			size_t offsetAtLine;
+			size_t lineNumber = 0;
+			size_t offsetAtLine = 0;
 		};
 		
 		// MARK: - Constructor
