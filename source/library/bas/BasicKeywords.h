@@ -30,7 +30,7 @@ namespace bas
 		byte code;
 	};
 	
-	struct StrCode
+	struct EscapeCode
 	{
 		std::string sequence;
 		byte code;
@@ -47,7 +47,7 @@ namespace bas
 		
 	private:
 		std::vector<Keyword> _keywords;
-		std::vector<StrCode> _stringCodes;
+		std::vector<EscapeCode> _escapeCodes;
 	};
 	
 	

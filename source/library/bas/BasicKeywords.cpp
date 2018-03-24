@@ -23,7 +23,7 @@ namespace bas
 	// MARK: - Support functions
 
 	static std::vector<Keyword> prepareKeywords();
-	static std::vector<StrCode> prepareStringCodes();
+	static std::vector<EscapeCode> prepareEscapeCodes();
 	
 	static bool matchString(const std::string & str, Tokenizer::iterator begin, Tokenizer::iterator end) {
 		for (char c: str) {
@@ -56,7 +56,7 @@ namespace bas
 	
 	BasicKeywords::BasicKeywords() :
 		_keywords(prepareKeywords()),
-		_stringCodes(prepareStringCodes())
+		_escapeCodes(prepareEscapeCodes())
 	{
 	}
 	
@@ -75,7 +75,7 @@ namespace bas
 	
 	byte BasicKeywords::findEscapeCode(Tokenizer::iterator begin, Tokenizer::iterator end) const
 	{
-		for (auto && sc: _stringCodes) {
+		for (auto && sc: _escapeCodes) {
 			if (matchString(sc.sequence, begin, end)) {
 				return sc.code;
 			}
@@ -86,6 +86,13 @@ namespace bas
 	
 	
 	// MARK: - Keywords
+	
+	//
+	// 48k BASIC keywords.
+	//
+	// The table also contains alternate syntax, so
+	// you can type "goto" instead of "go to"
+	//
 	
 	static const char * s_keywordsTable[] =
 	{
@@ -206,6 +213,11 @@ namespace bas
 	
 	// MARK: - Escape codes
 	
+	//
+	// Following table contains string escape codes,
+	// compatible with `zmakebas` program.
+	//
+	
 	static const char * s_EscapeChars[] =
 	{
 		// block graphic
@@ -214,14 +226,16 @@ namespace bas
 		// udg
 		"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
 		"l", "m", "n", "o", "p", "q", "r", "s", "t", "u",
+		// End of table
 		nullptr
 	};
 	
-	static std::vector<StrCode> prepareStringCodes()
+	//
+	static std::vector<EscapeCode> prepareEscapeCodes()
 	{
 		byte code = 0x80;
 		
-		std::vector<StrCode> table;
+		std::vector<EscapeCode> table;
 		table.reserve(0x100 - code);
 		
 		const char ** p = s_EscapeChars;
@@ -230,14 +244,13 @@ namespace bas
 			if (!sequence) {
 				break;
 			}
-			table.push_back(StrCode { sequence, code++ });
+			table.push_back(EscapeCode { sequence, code++ });
 		}
-		// copyright sign
-		table.push_back(StrCode {"*", 0x7F});
-		// pound sign
-		table.push_back(StrCode {"`", 0x60});
-		// backslash
-		table.push_back(StrCode {"\\", '\\'});
+		
+		table.push_back(EscapeCode {"*", 0x7F});		// copyright sign
+		table.push_back(EscapeCode {"`", 0x60});		// pound sign
+		table.push_back(EscapeCode {"\\", '\\'});		// backslash
+		table.push_back(EscapeCode {"@", '@'});			// @
 		return table;
 	}
 	
