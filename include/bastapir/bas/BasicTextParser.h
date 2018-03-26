@@ -51,15 +51,25 @@ namespace bas
 			}
 		};
 		
-		
+		/// Construcst BasicTextParser object. Parameter |log| is required and you have to provide
+		/// error logging facility. You can also specify a variant of BASIC dialect.
 		BasicTextParser(ErrorLogging * log, Keywords::Variant variant = Keywords::Variant_48K);
 		
+		/// Assign constants which can be referenced from BASIC source code as `@ConstantName`. Only numeric
+		/// values are supported at this time. All provided `Variable` ojects must be resovled (e.g. has to contain
+		/// a value);
 		bool setConstants(std::vector<Variable> & constants);
 		
+		/// Resolves variable or constant with given |name|. The function returns tuple, where the first parameter
+		/// is boolean determining whether variable was found and second is actual resolved value.
 		std::tuple<bool, std::string> resolveVariable(const std::string & variable_name) const;
 		
+		/// Parses provided |source| and generates final program bytes. You have to specify |source_info| which may contain
+		/// an information about source code. Optionally, you can change |variant| of Spectrun BASIC.
+		/// Returns true if succeeded, false otherwise.
 		bool parse(const std::string & source, const SourceFileInfo & source_info, Keywords::Variant variant = Keywords::Variant_48K);
 		
+		/// Returns generated BASIC program bytes. The returned bytes are valid only when last `parse()` returned true.
 		const ByteArray & programBytes() const;
 
 	private:
@@ -69,10 +79,14 @@ namespace bas
 		bool doParse();
 		bool doParseLine();
 		
-		bool doParseVariable(bool is_line_begin);
 		bool doParseLineNumber();
 		bool doParseNumber(bool as_binary);
+		bool doParseVariable(bool is_line_begin);
 		bool doParseString();
+		bool doParseLineEscape(bool is_line_begin);
+		bool doParseKeywords(bool is_line_begin);
+
+		U16 nextLineNumber();
 		
 		Tokenizer::Range captureVariableName();
 		Tokenizer::Range captureNumber();
@@ -81,14 +95,18 @@ namespace bas
 		
 		// MARK: - Write bytes to stream.
 		
+		void writeByte(byte b);
+		void writeRange(const ByteRange & range);
+		
 		bool writeLineNumber(int n);
 		bool writeNumber(double n, const std::string & textual_representation);
-		U16 nextLineNumber();
+		
 		
 		// MARK: - Variable management
 		
 		/// Variable lookup (const version). Function search for name in constants & vars maps.
 		const Variable * findVariable(const std::string & name) const;
+		
 		/// Variable lookup. Function search for name in constants & vars maps.
 		Variable * findVariable(const std::string & name);
 		
@@ -116,7 +134,6 @@ namespace bas
 		// MARK: - Members
 		
 		typedef std::map<std::string, Variable> VarMap;
-		
 		
 		ErrorLogging * _log;
 		SourceFileInfo _sourceFileInfo;

@@ -114,6 +114,9 @@ namespace bastapir
 		/// Returns char at offset to current position, or 0 if offset is out of range.
 		char charAt(difference offset = 0) const;
 		
+		/// Returns true if char at given |offset| to current position is equal to |c|
+		char isCharAt(char c, difference offset = 0) const;
+		
 		
 		// MARK: - Move forwad / backward
 		

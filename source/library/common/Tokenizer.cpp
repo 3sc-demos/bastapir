@@ -157,6 +157,10 @@ namespace bastapir
 		return c;
 	}
 	
+	char Tokenizer::isCharAt(char c, difference offset) const
+	{
+		return charAt(offset) == c;
+	}
 	
 	// MARK: - Move forwad / backward
 	

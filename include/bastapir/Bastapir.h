@@ -17,4 +17,51 @@
 #pragma once
 
 #include <bastapir/tap/TapArchiveBuilder.h>
-#include <bastapir/bas/BasicConvertor.h>
+#include <bastapir/bas/BasicTextParser.h>
+#include <bastapir/common/SourceFile.h>
+
+namespace bastapir
+{
+	class BastapirDocument {
+	public:
+		
+		BastapirDocument(ErrorLogging * log);
+		
+		bool processDocument(const SourceTextFile & file);
+		const ByteRange archiveBytes() const;
+		
+	private:
+		
+		bool doParseDocument();
+		bool doParseLine();
+		
+		bool doParseCmdProgram();
+		bool doParseCmdCode();
+		
+		/// Returns simple ErrorInfo structure.
+		ErrorInfo errInfo() const {
+			return MakeError(_sourceFileInfo);
+		}
+		
+		/// Returns ErrorInfo structure with current line & column.
+		ErrorInfo errInfoLC() const {
+			auto pos_info = _tokenizer.positionInfo();
+			pos_info.lineNumber++;
+			pos_info.offsetAtLine++;
+			return MakeError(_sourceFileInfo, pos_info.lineNumber, pos_info.offsetAtLine);
+		}
+		
+		std::string 	captureWord(bool lowercase);
+		bool		 	captureNumber(long & value);
+		bool		 	captureString(std::string & captured);
+		
+		// Members
+		
+		ErrorLogging * _log;
+		tap::TapArchiveBuilder _tapBuilder;
+		SourceFileInfo _sourceFileInfo;
+		
+		Tokenizer _tokenizer;
+		ByteArray _archiveBytes;
+	};
+}

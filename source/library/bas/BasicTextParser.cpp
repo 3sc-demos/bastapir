@@ -25,8 +25,10 @@ namespace bas
 	
 	BasicTextParser::BasicTextParser(ErrorLogging * log, Keywords::Variant variant) :
 		_log(log),
-		_keywords(variant)
+		_keywords(variant),
+		_tokenizer(log)
 	{
+		assert(_log != nullptr);
 	}
 	
 	bool BasicTextParser::setConstants(std::vector<Variable> &constants)
@@ -55,8 +57,8 @@ namespace bas
 	{
 		// Prepare internal structures
 		_sourceFileInfo = source_info;
-		_tokenizer.resetTo(source.begin(), source.end());
 		_tokenizer.setStopAtLineEnd(true);
+		_tokenizer.resetTo(source.begin(), source.end());
 		_keywords.setVariant(variant);
 		
 		// Clear variables & validate constants
@@ -152,8 +154,9 @@ namespace bas
 			_tokenizer.skipWhitespace();
 			char c = _tokenizer.charAt();
 			if (0 == c) {
-				// End of line
-				break;
+				// End of line, store new line character...
+				writeByte(Keywords::Code_ENT);
+				return true;
 			}
 			
 			// #### Comment
@@ -163,35 +166,15 @@ namespace bas
 			}
 			
 			// #### Escape to next line
-			if (c == '\\') {
-				bool next_is_end = _tokenizer.charAt(1) == 0;
-				if (!_ctx.inREM || next_is_end) {
-					if (!next_is_end) {
-						_log->warning(errInfoLC(), "Characters after line escape (\\) will be ignored.");
-					}
-					// The BASIC line will continue on next source code line.
-					_tokenizer.nextLine();
-					continue;
-					
-				} else {
-					// Escape sequence in REM statement
-					_tokenizer.movePosition();
-					size_t matched_size;
-					auto code = _keywords.findEscapeCode(_tokenizer.position(), _tokenizer.line().end, matched_size);
-					if (code == 0) {
-						_log->error(errInfoLC(), "Invalid escaped character in REM statement.");
-						return false;
-					}
-					_tokenizer.movePosition(matched_size);
-					if (_ctx.pass > 1) {
-						_output.push_back(code);
-					}
-					continue;
+			if ('\\' == c) {
+				if (!doParseLineEscape(is_line_begin)) {
+					return false;
 				}
+				continue;
 			}
 			
 			// #### Variables
-			if (c == '@') {
+			if ('@' == c) {
 				if (!doParseVariable(is_line_begin)) {
 					return false;
 				}
@@ -211,7 +194,7 @@ namespace bas
 				}
 				continue;
 			}
-			if (c == '.') {
+			if ('.' == c) {
 				// Check if we're at the beginnig of line.
 				if (is_line_begin) {
 					_log->error(errInfoLC(), "Wrong line number.");
@@ -225,7 +208,7 @@ namespace bas
 			}
 			
 			// #### String
-			if (c == '"') {
+			if ('"' == c) {
 				// String should not be at the beginning of line.
 				if (is_line_begin) {
 					_log->error(errInfoLC(), "Nonsense in BASIC.");
@@ -237,63 +220,12 @@ namespace bas
 				continue;
 			}
 			
-			// #### Look for keyword
+			// #### Keywords
+			if (!doParseKeywords(is_line_begin)) {
+				return false;
+			}
 			
-			size_t matched_size;
-			byte code = _keywords.findKeyword(_tokenizer.position(), _tokenizer.line().end, matched_size);
-			if (is_line_begin) {
-				// Only keywords are allowed at the beginning of line
-				if (code == 0) {
-					_log->error(errInfoLC(), "Nonsense in BASIC.");
-					return false;
-				}
-				// Now we know that code is keyword and we're at the beginning of line,
-				// so we have to store line number.
-				U16 line = nextLineNumber();
-				if (!writeLineNumber(line)) {
-					return false;
-				}
-			}
-			if (code != 0) {
-				// Keyword, we need to move cursor forward
-				_tokenizer.movePosition(matched_size);
-				if (code == Keywords::Code_BIN) {
-					// BIN keyword requires a special handling. We're skipping BIN
-					// completely
-					if (is_line_begin) {
-						_log->error(errInfoLC(), "Nonsense in BASIC.");
-						return false;
-					}
-					_tokenizer.skipWhitespace();
-					if (!doParseNumber(true)) {
-						return false;
-					}
-					continue;
-				}
-				if (code == Keywords::Code_REM) {
-					_ctx.inREM = true;
-				}
-			} else if (isalpha(c)) {
-				// Not a keyword, but regular character. Try to match variable in BASIC
-				auto word = captureVariableName();
-				if (_ctx.pass > 1) {
-					_output.append(MakeRange(word.content()));
-				}
-				continue;
-				
-			} else {
-				// Not a keyword, not a word, write that character to output
-				code = c;
-			}
-			if (_ctx.pass > 1) {
-				_output.push_back(code);
-			}
-			// Everything looks great, move to next char...
-		}
-		
-		// Store new line character...
-		if (_ctx.pass > 1) {
-			_output.push_back(Keywords::Code_ENT);
+			// End of mail loop. We can process next character now.
 		}
 		return true;
 	}
@@ -322,7 +254,7 @@ namespace bas
 			// Hexa
 			if (c2 == 'x' || c2 == 'X') {
 				// hexadecimal, as 0x or 0X
-				_tokenizer.movePosition(1);
+				_tokenizer.movePosition(2);
 				auto hexadecimal = captureHexadecimalNumber();
 				if (hexadecimal.empty()) {
 					_log->error(errInfoLC(), "Invalid hexadecimal number.");
@@ -338,7 +270,7 @@ namespace bas
 			} else if (c2 == 'b' || c2 == 'B' || as_binary) {
 				// 0b... or 0B... or direct request for binary number
 				if (c1 == '0' && c2 == 'b') {
-					_tokenizer.movePosition(1);
+					_tokenizer.movePosition(2);
 				}
 				auto binary = captureBinaryNumber();
 				if (binary.empty()) {
@@ -409,23 +341,29 @@ namespace bas
 			// first pass, we're declaring stuff
 			auto variable = Variable::variable(variable_name);
 			if (is_line_begin) {
+				// This is line number, we need to generate a next number & mark that
+				// next real line should not increase line number.
 				variable.setValue(std::to_string(nextLineNumber()));
 				_ctx.doNotIncrementNextLine = true;
 			}
+			// Register variable.
 			if (!addVariable(variable, true)) {
 				return false;
 			}
 		} else {
 			// 2nd pass is different. We need to use stored variables.
 			if (is_line_begin) {
-				// We already have value for this variable
+				// We already have value for this variable. Just consume line number
+				// and mark "do not increment" flag as we did in first pass.
 				nextLineNumber();
 				_ctx.doNotIncrementNextLine = true;
+				//
 			} else {
+				// Resolve variable. Currently only numeric variables are supported.
 				bool resolved; std::string value;
 				std::tie(resolved, value) = resolveVariable(variable_name);
 				if (!resolved) {
-					_log->error(errInfoLC(), "Unable to resolve value of variable `" + variable_name + "`. It looks like internal error :(");
+					_log->error(errInfoLC(), "Unable to resolve value of variable `" + variable_name + "`. It looks like an internal error :(");
 					return false;
 				}
 				double dbl_value = std::stod(value);
@@ -438,9 +376,147 @@ namespace bas
 	
 	bool BasicTextParser::doParseString()
 	{
-		return false;
+		// We're still at `"` character, so reset the capture and move forward.
+		_tokenizer.resetCapture();
+		_tokenizer.movePosition();
+		
+		while (true) {
+			char c1 = _tokenizer.getChar();
+			if (0 == c1) {
+				// End of line / End of file and string has not been closed.
+				_log->error(errInfoLC(), "Unexpected end of string.");
+				return false;
+			}
+			if ('"' == c1) {
+				// End of string, doublequote escape in string.
+				if (_tokenizer.isCharAt('"')) {
+					// It's double quote escape, we should consume one more character
+					// and continue within the string
+					_tokenizer.movePosition();
+					continue;
+				}
+				break;
+			}
+			if ('\\' == c1) {
+				// Possible escape sequence.
+				size_t captured_size;
+				byte code = _keywords.findEscapeCode(_tokenizer.position(), _tokenizer.line().end, captured_size);
+				if (code == 0) {
+					_log->error(errInfoLC(), "Invalid charcter escape sequence in string.");
+					return false;
+				}
+				// Go back in string, we don't want to capture `\`
+				_tokenizer.movePosition(-1);
+				writeRange(MakeRange(_tokenizer.capture().content()));
+				_tokenizer.movePosition(1 + captured_size);
+				_tokenizer.resetCapture();
+				continue;
+			}
+		}
+		// Write captured region and return with success
+		writeRange(MakeRange(_tokenizer.capture().content()));
+		return true;
 	}
 	
+	
+	bool BasicTextParser::doParseLineEscape(bool is_line_begin)
+	{
+		bool next_is_end = _tokenizer.charAt(1) == 0;
+		if (!_ctx.inREM || next_is_end) {
+			if (!next_is_end) {
+				_log->warning(errInfoLC(), "Characters after line escape (\\) will be ignored.");
+			}
+			// The BASIC line will continue on next source code line.
+			_tokenizer.nextLine();
+			//
+		} else {
+			// Escape sequence in REM statement
+			_tokenizer.movePosition();
+			size_t matched_size;
+			auto code = _keywords.findEscapeCode(_tokenizer.position(), _tokenizer.line().end, matched_size);
+			if (code == 0) {
+				_log->error(errInfoLC(), "Invalid escaped character in REM statement.");
+				return false;
+			}
+			_tokenizer.movePosition(matched_size);
+			writeByte(code);
+		}
+		return true;
+	}
+	
+	
+	bool BasicTextParser::doParseKeywords(bool is_line_begin)
+	{
+		char c = _tokenizer.charAt();
+		
+		size_t matched_size;
+		byte code = _keywords.findKeyword(_tokenizer.position(), _tokenizer.line().end, matched_size);
+		if (is_line_begin) {
+			// Only keywords are allowed at the beginning of line
+			if (code == 0) {
+				_log->error(errInfoLC(), "Nonsense in BASIC.");
+				return false;
+			}
+			// Now we know that code is keyword and we're at the beginning of line,
+			// so we have to store line number.
+			U16 line = nextLineNumber();
+			if (!writeLineNumber(line)) {
+				return false;
+			}
+		}
+		if (code != 0) {
+			// Keyword, we need to move cursor forward
+			_tokenizer.movePosition(matched_size);
+			if (code == Keywords::Code_BIN) {
+				// BIN keyword requires a special handling. We're skipping BIN
+				// completely
+				if (is_line_begin) {
+					_log->error(errInfoLC(), "Nonsense in BASIC.");
+					return false;
+				}
+				_tokenizer.skipWhitespace();
+				if (!doParseNumber(true)) {
+					return false;
+				}
+				return true;
+			}
+			if (code == Keywords::Code_REM) {
+				_ctx.inREM = true;
+			}
+			
+		} else if (isalpha(c)) {
+			// Not a keyword, but regular character. Try to match regular BASIC variable
+			writeRange(MakeRange(captureVariableName().content()));
+			return true;
+			
+		} else {
+			// Not a keyword, not a word, write that character to the output
+			code = c;
+		}
+		// Looks good, write code to the stream.
+		writeByte(code);
+		return true;
+	}
+	
+	//
+	
+	U16 BasicTextParser::nextLineNumber()
+	{
+		U16 next_line = _ctx.basicLineNumber;
+		if (next_line == 0) {
+			next_line = 10;	// defaulting to 10
+		} else {
+			if (!_ctx.doNotIncrementNextLine) {
+				next_line += _ctx.basicLineStep;
+			} else {
+				_ctx.doNotIncrementNextLine = false;
+			}
+		}
+		return next_line;
+	}
+	
+	
+	// MARK: - Capture sequences
 	
 	Tokenizer::Range BasicTextParser::captureNumber()
 	{
@@ -470,23 +546,22 @@ namespace bas
 		return _tokenizer.capture();
 	}
 	
-	U16 BasicTextParser::nextLineNumber()
+
+	// MARK: - Write bytes to stream.
+	
+	void BasicTextParser::writeByte(byte b)
 	{
-		U16 next_line = _ctx.basicLineNumber;
-		if (next_line == 0) {
-			next_line = 10;	// defaulting to 10
-		} else {
-			if (!_ctx.doNotIncrementNextLine) {
-				next_line += _ctx.basicLineStep;
-			} else {
-				_ctx.doNotIncrementNextLine = false;
-			}
+		if (_ctx.pass > 1) {
+			_output.push_back(b);
 		}
-		return next_line;
 	}
 	
-	
-	// MARK: - Write bytes to stream.
+	void BasicTextParser::writeRange(const ByteRange & range)
+	{
+		if (_ctx.pass > 1) {
+			_output.append(range);
+		}
+	}
 	
 	bool BasicTextParser::writeLineNumber(int number)
 	{
@@ -507,9 +582,8 @@ namespace bas
 		_ctx.basicLineNumber = n;
 		_ctx.processedLines++;
 		
-		if (_ctx.pass > 1) {
-			_output.append(MakeRange(_ctx.basicLineNumber));
-		}
+		writeRange(MakeRange(_ctx.basicLineNumber));
+		
 		return true;
 	}
 	

@@ -22,29 +22,7 @@ using namespace bastapir::tap;
 
 int main(int argc, const char * argv[])
 {
-	auto file = FileEntry("ROMfacsilityData", FileEntry::Code, ByteArray({ 0xf3, 0xaf }));
-	file.setParams({0, 32768});
-
-	auto logger = FileErrorLogger();
-	{
-		auto proc_path = std::string(argv[0]);
-		auto off = proc_path.rfind('/');
-		if (off != proc_path.npos) {
-			logger.setLogPrefix(proc_path.substr(off + 1) + ": ");
-		}
-	}
+	BastapirDocument document("test.recipe");
 	
-	TapArchiveBuilder builder(&logger);
-	builder.addFile(file);
-	auto tapContent = builder.build();
-	
-	printf(" Tap: ");
-	for (byte b: tapContent) {
-		printf("%02x ", b);
-	}
-	printf("\n");
-
-	std::string nnn("4CFE");
-	int val = std::stoi(nnn, nullptr, 16);
 	return 0;
 }
