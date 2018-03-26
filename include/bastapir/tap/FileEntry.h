@@ -17,6 +17,7 @@
 #pragma once
 
 #include <bastapir/common/SourceFile.h>
+#include <bastapir/common/ErrorLogging.h>
 
 namespace bastapir
 {
@@ -139,8 +140,10 @@ namespace tap
 			ERR_CodeHeader,
 		};
 		
-		/// Validates file entry object and returns appropriate error code or OK.
-		ValidationResult validate() const;
+		/// Validates file entry object and returns true if header is valid. If false is returned, then
+		/// you need to iterate over |issues| vector and decide whether warnings or errors are critical
+		/// for your purposes.
+		bool validate(std::vector<ValidationResult> & issues) const;
 		
 	private:
 		

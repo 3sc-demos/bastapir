@@ -14,15 +14,599 @@
 // limitations under the License.
 //
 
-#include "BasicTextParser.h"
+#include <bastapir/bas/BasicTextParser.h>
+#include "Double2Speccy.h"
 
 namespace bastapir
 {
 namespace bas
 {
+	// MARK: - Class implementation -
+	
+	BasicTextParser::BasicTextParser(ErrorLogging * log, Keywords::Variant variant) :
+		_log(log),
+		_keywords(variant)
+	{
+	}
+	
+	bool BasicTextParser::setConstants(std::vector<Variable> &constants)
+	{
+		_constants.clear();
+		for (auto && c: constants) {
+			if (_constants.find(c.name) != _constants.end()) {
+				_log->warning(errInfo(), "Constant `" + c.name + "` injected into BASIC source already exists. Ignoring new value.");
+				continue;
+			}
+			_constants[c.name] = c;
+		}
+		return true;
+	}
+	
+	std::tuple<bool, std::string> BasicTextParser::resolveVariable(const std::string & variable_name) const
+	{
+		auto var = findVariable(variable_name);
+		if (var && var->isResolved) {
+			return std::make_tuple(true, var->value);
+		}
+		return std::make_tuple(false, "");
+	}
+	
+	bool BasicTextParser::parse(const std::string & source, const SourceFileInfo & source_info, Keywords::Variant variant)
+	{
+		// Prepare internal structures
+		_sourceFileInfo = source_info;
+		_tokenizer.resetTo(source.begin(), source.end());
+		_tokenizer.setStopAtLineEnd(true);
+		_keywords.setVariant(variant);
+		
+		// Clear variables & validate constants
+		_variables.clear();
+		for (auto && c: _constants) {
+			if (!c.second.isResolved) {
+				_log->error(errInfo(), "Constant `" + c.first + "` injected into BASIC has unresolved value.");
+				return false;
+			}
+		}
+		// Let's parse that string!!
+		return doParse();
+	}
+	
+	const ByteArray & BasicTextParser::programBytes() const {
+		return _output;
+	}
+	
+	
+	// MARK: - Matching functions -
+	
+	static int match_VariableName(int c)
+	{
+		if (isalnum(c)) {
+			return true;
+		}
+		return false;
+	}
+	
+	static int match_BinaryNumber(int c)
+	{
+		return c == '1' || c == '0';
+	}
+	
+	static int match_HexadecimalNumber(int c)
+	{
+		return (c >= '0' && c <= '9') ||
+				(c >= 'a' && c <= 'f') ||
+				(c >= 'A' && c <= 'F');
+	}
+	
+	
+	// MARK: - Private parser -
+	
+	bool BasicTextParser::doParse()
+	{
+		for (U16 pass = 1; pass <= 2; ++pass) {
+			// Prepare ctx
+			_ctx = CTX();
+			_ctx.pass = pass;
+			_output.clear();
+			//
+			while (true) {
+				if (!doParseLine()) {
+					return false;
+				}
+				if (!_tokenizer.nextLine()) {
+					break;
+				}
+			}
+			//
+			if (pass == 1) {
+				if (isAllVariablesResolved(true) == false) {
+					return false;
+				}
+			} else {
+				if (_ctx.processedLines == 0) {
+					_log->error(errInfo(), "BASIC program is empty.");
+					return false;
+				}
+				if (_output.empty()) {
+					_log->error(errInfo(), "No bytes were generated from BASIC program.");
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	
+	bool BasicTextParser::doParseLine()
+	{
+		bool line_begin = true;
+		
+		_ctx.inREM = false;
+		
+		while (true) {
+			// Is this first character in line?
+			bool is_line_begin = line_begin;
+			line_begin = false;
+			
+			// Skip leading whitespace
+			_tokenizer.skipWhitespace();
+			char c = _tokenizer.charAt();
+			if (0 == c) {
+				// End of line
+				break;
+			}
+			
+			// #### Comment
+			if ('#' == c) {
+				// ignore rest of the line. This is source code comment
+				return true;
+			}
+			
+			// #### Escape to next line
+			if (c == '\\') {
+				bool next_is_end = _tokenizer.charAt(1) == 0;
+				if (!_ctx.inREM || next_is_end) {
+					if (!next_is_end) {
+						_log->warning(errInfoLC(), "Characters after line escape (\\) will be ignored.");
+					}
+					// The BASIC line will continue on next source code line.
+					_tokenizer.nextLine();
+					continue;
+					
+				} else {
+					// Escape sequence in REM statement
+					_tokenizer.movePosition();
+					size_t matched_size;
+					auto code = _keywords.findEscapeCode(_tokenizer.position(), _tokenizer.line().end, matched_size);
+					if (code == 0) {
+						_log->error(errInfoLC(), "Invalid escaped character in REM statement.");
+						return false;
+					}
+					_tokenizer.movePosition(matched_size);
+					if (_ctx.pass > 1) {
+						_output.push_back(code);
+					}
+					continue;
+				}
+			}
+			
+			// #### Variables
+			if (c == '@') {
+				if (!doParseVariable(is_line_begin)) {
+					return false;
+				}
+				continue;
+			}
+			
+			// #### Numbers
+			if (isnumber(c)) {
+				if (is_line_begin) {
+					if (!doParseLineNumber()) {
+						return false;
+					}
+				} else {
+					if (!doParseNumber(false)) {
+						return false;
+					}
+				}
+				continue;
+			}
+			if (c == '.') {
+				// Check if we're at the beginnig of line.
+				if (is_line_begin) {
+					_log->error(errInfoLC(), "Wrong line number.");
+					return false;
+				}
+				// Floating point number starting with dot.
+				if (!doParseNumber(false)) {
+					return false;
+				}
+				continue;
+			}
+			
+			// #### String
+			if (c == '"') {
+				// String should not be at the beginning of line.
+				if (is_line_begin) {
+					_log->error(errInfoLC(), "Nonsense in BASIC.");
+					return false;
+				}
+				if (!doParseString()) {
+					return false;
+				}
+				continue;
+			}
+			
+			// #### Look for keyword
+			
+			size_t matched_size;
+			byte code = _keywords.findKeyword(_tokenizer.position(), _tokenizer.line().end, matched_size);
+			if (is_line_begin) {
+				// Only keywords are allowed at the beginning of line
+				if (code == 0) {
+					_log->error(errInfoLC(), "Nonsense in BASIC.");
+					return false;
+				}
+				// Now we know that code is keyword and we're at the beginning of line,
+				// so we have to store line number.
+				U16 line = nextLineNumber();
+				if (!writeLineNumber(line)) {
+					return false;
+				}
+			}
+			if (code != 0) {
+				// Keyword, we need to move cursor forward
+				_tokenizer.movePosition(matched_size);
+				if (code == Keywords::Code_BIN) {
+					// BIN keyword requires a special handling. We're skipping BIN
+					// completely
+					if (is_line_begin) {
+						_log->error(errInfoLC(), "Nonsense in BASIC.");
+						return false;
+					}
+					_tokenizer.skipWhitespace();
+					if (!doParseNumber(true)) {
+						return false;
+					}
+					continue;
+				}
+				if (code == Keywords::Code_REM) {
+					_ctx.inREM = true;
+				}
+			} else if (isalpha(c)) {
+				// Not a keyword, but regular character. Try to match variable in BASIC
+				auto word = captureVariableName();
+				if (_ctx.pass > 1) {
+					_output.append(MakeRange(word.content()));
+				}
+				continue;
+				
+			} else {
+				// Not a keyword, not a word, write that character to output
+				code = c;
+			}
+			if (_ctx.pass > 1) {
+				_output.push_back(code);
+			}
+			// Everything looks great, move to next char...
+		}
+		
+		// Store new line character...
+		if (_ctx.pass > 1) {
+			_output.push_back(Keywords::Code_ENT);
+		}
+		return true;
+	}
+	
+	
+	bool BasicTextParser::doParseLineNumber()
+	{
+		auto line_range = captureNumber();
+		char c_after = _tokenizer.charAt();
+		// There must be space character after line number.
+		if (line_range.empty() || c_after == 0 || !isspace(c_after)) {
+			_log->error(errInfoLC(), "Wrong line number.");
+			return false;
+		}
+		int number = std::stoi(line_range.content());
+		return writeLineNumber(number);
+	}
+	
+	
+	bool BasicTextParser::doParseNumber(bool as_binary)
+	{
+		// Regular number
+		char c1 = _tokenizer.charAt();
+		if (c1 == '0' || as_binary) {
+			char c2 = _tokenizer.charAt(1);
+			// Hexa
+			if (c2 == 'x' || c2 == 'X') {
+				// hexadecimal, as 0x or 0X
+				_tokenizer.movePosition(1);
+				auto hexadecimal = captureHexadecimalNumber();
+				if (hexadecimal.empty()) {
+					_log->error(errInfoLC(), "Invalid hexadecimal number.");
+					return false;
+				}
+				int number = std::stoi(hexadecimal.content(), nullptr, 16);
+				if (number > 0xFFFF) {
+					_log->error(errInfoLC(), "Hexadecimal number is too big.");
+					return false;
+				}
+				return writeNumber((double)number, std::to_string(number));
+				
+			} else if (c2 == 'b' || c2 == 'B' || as_binary) {
+				// 0b... or 0B... or direct request for binary number
+				if (c1 == '0' && c2 == 'b') {
+					_tokenizer.movePosition(1);
+				}
+				auto binary = captureBinaryNumber();
+				if (binary.empty()) {
+					_log->error(errInfoLC(), "Invalid binary number.");
+					return false;
+				}
+				int number = std::stoi(binary.content(), nullptr, 2);
+				if (number > 0xFFFF) {
+					_log->error(errInfoLC(), "Binary number is too big.");
+					return false;
+				}
+				// As an optimization, we completely ignore binary numbers and write
+				// them as regular numbers.
+				return writeNumber((double)number, std::to_string(number));
+			}
+		}
+			
+		// Not binary, not hexadecimal... We need to parse number more deeply.
+		_tokenizer.resetCapture();
+		if (c1 != '.') {
+			// IIII
+			_tokenizer.skipWhile(isnumber);
+		}
+		c1 = _tokenizer.charAt();
+		if (c1 == '.') {
+			// .FFF
+			_tokenizer.movePosition();
+			_tokenizer.skipWhile(isnumber);
+		}
+		c1 = _tokenizer.charAt();
+		if (c1 == 'E' || c1 == 'e') {
+			// eMMM or EMMM
+			_tokenizer.movePosition();
+			_tokenizer.skipWhile(isnumber);
+		}
+		auto any_number = _tokenizer.capture();
+		if (any_number.empty()) {
+			_log->error(errInfoLC(), "Invalid number.");
+			return false;
+		}
+		auto textual_repr = any_number.content();
+		double number = std::stod(textual_repr);
+		return writeNumber(number, textual_repr);
+	}
+	
+	
+	bool BasicTextParser::doParseVariable(bool is_line_begin)
+	{
+		// Start of label or variable? Skip `@` at first...
+		_tokenizer.movePosition();
+		auto variable_name = captureVariableName().content();
+		if (is_line_begin) {
+			if (_tokenizer.getChar() != ':') {
+				_log->error(errInfoLC(), "Invalid symbolic line number.");
+				return false;
+			}
+		}
+		if (variable_name.empty()) {
+			if (is_line_begin) {
+				_log->error(errInfoLC(), "Invalid symbolic line number.");
+			} else {
+				_log->error(errInfoLC(), "Invalid usage of sybolic line number.");
+			}
+			return false;
+		}
+		
+		if (_ctx.pass == 1) {
+			// first pass, we're declaring stuff
+			auto variable = Variable::variable(variable_name);
+			if (is_line_begin) {
+				variable.setValue(std::to_string(nextLineNumber()));
+				_ctx.doNotIncrementNextLine = true;
+			}
+			if (!addVariable(variable, true)) {
+				return false;
+			}
+		} else {
+			// 2nd pass is different. We need to use stored variables.
+			if (is_line_begin) {
+				// We already have value for this variable
+				nextLineNumber();
+				_ctx.doNotIncrementNextLine = true;
+			} else {
+				bool resolved; std::string value;
+				std::tie(resolved, value) = resolveVariable(variable_name);
+				if (!resolved) {
+					_log->error(errInfoLC(), "Unable to resolve value of variable `" + variable_name + "`. It looks like internal error :(");
+					return false;
+				}
+				double dbl_value = std::stod(value);
+				return writeNumber(dbl_value, value);
+			}
+		}
+		return true;
+	}
+	
+	
+	bool BasicTextParser::doParseString()
+	{
+		return false;
+	}
+	
+	
+	Tokenizer::Range BasicTextParser::captureNumber()
+	{
+		_tokenizer.resetCapture();
+		_tokenizer.skipWhile(isnumber);
+		return _tokenizer.capture();
+	}
 
+	Tokenizer::Range BasicTextParser::captureVariableName()
+	{
+		_tokenizer.resetCapture();
+		_tokenizer.skipWhile(match_VariableName);
+		return _tokenizer.capture();
+	}
+	
+	Tokenizer::Range BasicTextParser::captureHexadecimalNumber()
+	{
+		_tokenizer.resetCapture();
+		_tokenizer.skipWhile(match_HexadecimalNumber);
+		return _tokenizer.capture();
+	}
+
+	Tokenizer::Range BasicTextParser::captureBinaryNumber()
+	{
+		_tokenizer.resetCapture();
+		_tokenizer.skipWhile(match_BinaryNumber);
+		return _tokenizer.capture();
+	}
+	
+	U16 BasicTextParser::nextLineNumber()
+	{
+		U16 next_line = _ctx.basicLineNumber;
+		if (next_line == 0) {
+			next_line = 10;	// defaulting to 10
+		} else {
+			if (!_ctx.doNotIncrementNextLine) {
+				next_line += _ctx.basicLineStep;
+			} else {
+				_ctx.doNotIncrementNextLine = false;
+			}
+		}
+		return next_line;
+	}
 	
 	
+	// MARK: - Write bytes to stream.
+	
+	bool BasicTextParser::writeLineNumber(int number)
+	{
+		if (number < 1 || number > 9999) {
+			_log->error(errInfoLC(), "Wrong line number.");
+			return false;
+		}
+		U16 n = number & 0xFFFF;
+		if (n <= _ctx.basicLineNumber) {
+			if (n == _ctx.basicLineNumber) {
+				_log->error(errInfoLC(), "Line number is equal to previous one.");
+			} else {
+				_log->error(errInfoLC(), "Line number is lesser than previous one.");
+			}
+			return false;
+		}
+		
+		_ctx.basicLineNumber = n;
+		_ctx.processedLines++;
+		
+		if (_ctx.pass > 1) {
+			_output.append(MakeRange(_ctx.basicLineNumber));
+		}
+		return true;
+	}
+	
+	bool BasicTextParser::writeNumber(double n, const std::string & textual_representation)
+	{
+		int exponent;
+		long mantissa;
+		if (!dbl2spec(n, exponent, mantissa)) {
+			_log->error(errInfoLC(), "Exponent out of range (number is too big)");
+			return false;
+		}
+		if (_ctx.pass > 1) {
+			_output.append(MakeRange(textual_representation));
+			if (!_ctx.inREM) {
+				_output.push_back(Keywords::Code_NUM);
+				_output.push_back(exponent);
+				_output.push_back((mantissa >> 24) & 0xFF);
+				_output.push_back((mantissa >> 16) & 0xFF);
+				_output.push_back((mantissa >> 8 ) & 0xFF);
+				_output.push_back( mantissa        & 0xFF);
+			}
+		}
+		return true;
+	}
+	
+	// MARK: - Variable management
+	
+	const BasicTextParser::Variable * BasicTextParser::findVariable(const std::string & name) const
+	{
+		auto it = _constants.find(name);
+		if (it != _constants.end()) {
+			return &it->second;
+		}
+		it = _variables.find(name);
+		if (it != _variables.end()) {
+			return &it->second;
+		}
+		return nullptr;
+	}
+	
+	BasicTextParser::Variable * BasicTextParser::findVariable(const std::string & name)
+	{
+		auto it = _constants.find(name);
+		if (it != _constants.end()) {
+			return &it->second;
+		}
+		it = _variables.find(name);
+		if (it != _variables.end()) {
+			return &it->second;
+		}
+		return nullptr;
+	}
+	
+	bool BasicTextParser::addVariable(const Variable & var, bool is_line_number)
+	{
+		auto current = findVariable(var.name);
+		if (current != nullptr) {
+			if (current->isResolved) {
+				// Current is already resolved
+				if (var.isResolved) {
+					// If new one is also resolved, this means that we have duplicit symbol.
+					if (is_line_number) {
+						_log->error(errInfoLC(), "Duplicit symbolic line number `" + var.name + "` detected in BASIC file.");
+					} else {
+						_log->error(errInfoLC(), "Duplicit variable `" + var.name + "` injected into BASIC.");
+					}
+					return false;
+				}
+			} else {
+				// current is not resolved, but if new one has value, then
+				// we can update value of already stored one.
+				if (var.isResolved) {
+					current->setValue(var.value);
+				}
+			}
+		} else {
+			// New variable, store to database
+			_variables[var.name] = var;
+		}
+		return true;
+	}
+	
+	bool BasicTextParser::isAllVariablesResolved(bool dump_error) const
+	{
+		bool result = true;
+		for (auto && var: _variables) {
+			if (!var.second.isResolved) {
+				result = false;
+				if (dump_error) {
+					_log->error(errInfo(), "Variable `" + var.first + "` injected into BASIC has unresolved value.");
+				} else {
+					break;
+				}
+			}
+		}
+		return result;
+	}
 	
 } // bastapir::bas
 } // bastapir

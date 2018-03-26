@@ -15,17 +15,24 @@
 //
 
 #include <bastapir/Bastapir.h>
+#include <bastapir/bas/Keywords.h>
 
 using namespace bastapir;
 using namespace bastapir::tap;
 
 int main(int argc, const char * argv[])
 {
-	auto file = FileEntry("ROM", FileEntry::Code, ByteArray({ 0xf3, 0xaf }));
+	auto file = FileEntry("ROMfacsilityData", FileEntry::Code, ByteArray({ 0xf3, 0xaf }));
 	file.setParams({0, 32768});
 
 	auto logger = FileErrorLogger();
-	logger.setLogPrefix(std::string(argv[0]) + ": ");
+	{
+		auto proc_path = std::string(argv[0]);
+		auto off = proc_path.rfind('/');
+		if (off != proc_path.npos) {
+			logger.setLogPrefix(proc_path.substr(off + 1) + ": ");
+		}
+	}
 	
 	TapArchiveBuilder builder(&logger);
 	builder.addFile(file);
@@ -36,5 +43,8 @@ int main(int argc, const char * argv[])
 		printf("%02x ", b);
 	}
 	printf("\n");
+
+	std::string nnn("4CFE");
+	int val = std::stoi(nnn, nullptr, 16);
 	return 0;
 }

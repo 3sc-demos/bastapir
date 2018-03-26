@@ -25,21 +25,29 @@ namespace bastapir
 
 	// MARK: - Constructor
 	
-	Tokenizer::Tokenizer(const iterator begin, const iterator end) :
-		Tokenizer(Range {begin, end})
-	{
-	}
-	
-	Tokenizer::Tokenizer(const Range range) :
+	Tokenizer::Tokenizer(ErrorLogging * logger) :
 		_stop_at_lf(false),
-		_str(range),
-		_state({range.begin, {range.begin, range.begin}, {range.begin, range.begin}, 0 })
+		_log(logger)
 	{
 	}
-	
-	
 	
 	// MARK: - Config
+	
+	void Tokenizer::setErrorLogging(ErrorLogging * logger)
+	{
+		_log = logger;
+	}
+	
+	void Tokenizer::resetTo(const Range range)
+	{
+		_str = range;
+		reset();
+	}
+	
+	void Tokenizer::resetTo(const iterator begin, const iterator end)
+	{
+		resetTo(Range { begin, end});
+	}
 	
 	void Tokenizer::reset()
 	{
@@ -54,6 +62,12 @@ namespace bastapir
 		if (_stop_at_lf) {
 			updateLineEnd();
 		}
+	}
+	
+	void Tokenizer::resetLine()
+	{
+		_state.pos = _state.line.begin;
+		resetCapture();
 	}
 	
 	void Tokenizer::setStopAtLineEnd(bool stop)
@@ -80,7 +94,7 @@ namespace bastapir
 	{
 		PositionInfo pi;
 		pi.lineNumber   = _state.lineNumber;
-		pi.offsetAtLine = std::distance(_state.pos, _state.line.end);
+		pi.offsetAtLine = std::distance(_state.line.begin, _state.pos);
 		return pi;
 	}
 	
@@ -116,7 +130,9 @@ namespace bastapir
 			char c = *(_state.pos++);
 			if (c == 0) {
 				// TODO: throw an error
-				fprintf(stderr, "Invalid NUL character in sequence\n");
+				if (_log) {
+					_log->error("Tokenizer: NUL character detected in string.");
+				}
 			}
 			return c;
 		}
@@ -125,17 +141,20 @@ namespace bastapir
 	
 	char Tokenizer::charAt(difference offset) const
 	{
-		auto & lim = limit();
 		if (offset > 0) {
-			if (offset >= std::distance(_state.pos, lim.end)) {
+			if (offset >= std::distance(_state.pos, limit().end)) {
 				return 0;
 			}
-		} else {
-			if (offset < std::distance(_state.pos, lim.begin)) {
+		} else if (offset < 0) {
+			if (offset < std::distance(_state.pos, limit().begin)) {
 				return 0;
 			}
 		}
-		return *(_state.pos + offset);
+		char c = *(_state.pos + offset);
+		if (c == 0 && _log) {
+			_log->error("Tokenizer: NUL character detected in string.");
+		}
+		return c;
 	}
 	
 	
@@ -143,13 +162,12 @@ namespace bastapir
 	
 	bool Tokenizer::movePosition(difference offset)
 	{
-		auto & lim = limit();
 		if (offset > 0) {
-			if (offset >= std::distance(_state.pos, lim.end)) {
+			if (offset >= std::distance(_state.pos, limit().end)) {
 				return false;
 			}
-		} else {
-			if (offset < std::distance(_state.pos, lim.begin)) {
+		} else if (offset < 0) {
+			if (offset < std::distance(_state.pos, limit().begin)) {
 				return 0;
 			}
 		}
@@ -174,7 +192,9 @@ namespace bastapir
 				c = realGetChar();
 				if (c != '\n') {
 					// TODO: throw an error, this is not right combination
-					fprintf(stderr, "Invalid CR-LF sequence\n");
+					if (_log) {
+						_log->error("Tokenizer: Invalid CR-LF sequence detected.");
+					}
 					_state.pos--;
 				}
 			}
@@ -187,7 +207,7 @@ namespace bastapir
 			resetCapture();
 		}
 		
-		return isRealEnd();
+		return !isRealEnd();
 	}
 	
 	Tokenizer::Range Tokenizer::line()
@@ -201,10 +221,26 @@ namespace bastapir
 	
 	bool Tokenizer::skipWhitespace()
 	{
-		return skipUntil(isspace);
+		return skipWhile(isspace);
 	}
 	
-	bool Tokenizer::skipUntil(int (*function)(int))
+	bool Tokenizer::skipWhile(int (*function)(int))
+	{
+		assert(function != nullptr);
+		while (true) {
+			char c = charAt();
+			if (c == 0) {
+				return false;
+			}
+			if (!function(c)) {
+				// rollback, because received character did not pass test.
+				return true;
+			}
+			movePosition();
+		}
+	}
+	
+	bool Tokenizer::searchFor(int (*function)(int))
 	{
 		assert(function != nullptr);
 		while (true) {
@@ -212,12 +248,12 @@ namespace bastapir
 			if (c == 0) {
 				return false;
 			}
-			if (!function(c)) {
+			if (function(c)) {
 				return true;
 			}
 		}
 	}
-	
+
 	
 	// MARK: - Range capture
 	

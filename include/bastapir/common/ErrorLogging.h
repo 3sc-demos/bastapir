@@ -1,5 +1,5 @@
-/**
- * Copyright 2018 Lime - HighTech Solutions s.r.o.
+/*
+ * Copyright 2018 Juraj Durech <durech.juraj@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,20 @@
 
 #pragma once
 
-#include <bastapir/common/Types.h>
+#include <bastapir/common/ErrorInfo.h>
 
 namespace bastapir
 {
 	// MARK: - Abstract logger
 	
-	struct ErrorInfo
-	{
-		std::string sourceFile;
-		size_t line 	= 0;
-		size_t column	= 0;
-		
-		bool hasInfo() const
-		{
-			return !sourceFile.empty();
-		}
-	};
-	
 	class ErrorLogging
 	{
 	public:
+		enum Severity
+		{
+			SevError, SevWarning, SevInfo, SevDebug
+		};
+		
 		// Report error
 		virtual void error(const std::string & message) = 0;
 		virtual void error(const ErrorInfo & info, const std::string & message) = 0;
@@ -48,6 +41,10 @@ namespace bastapir
 		// Print information
 		virtual void info(const std::string & message) = 0;
 		virtual void info(const ErrorInfo & info, const std::string & message) = 0;
+		
+		// Print debug information
+		virtual void debug(const std::string & message) = 0;
+		virtual void debug(const ErrorInfo & info, const std::string & message) = 0;
 	};
 	
 	
@@ -66,6 +63,9 @@ namespace bastapir
 		void setBasePathForSourceFiles(const std::string & base_path);
 		const std::string & basePathForSourceFiles() const;
 		
+		void setMinimumDisplayedSeverity(Severity severity);
+		Severity minimumDisplayedSeverity() const;
+		
 		// ErrorLogging interface
 		virtual void error(const std::string & message);
 		virtual void error(const ErrorInfo & info, const std::string & message);
@@ -73,13 +73,10 @@ namespace bastapir
 		virtual void warning(const ErrorInfo & info, const std::string & message);
 		virtual void info(const std::string & message);
 		virtual void info(const ErrorInfo & info, const std::string & message);
-		
+		virtual void debug(const std::string & message);
+		virtual void debug(const ErrorInfo & info, const std::string & message);
+
 	private:
-		
-		enum Severity
-		{
-			SevError, SevWarning, SevInfo
-		};
 		
 		void dump(FILE * stream, Severity severity, const ErrorInfo & ei, const std::string & message);
 		
@@ -88,6 +85,32 @@ namespace bastapir
 		
 		FILE * _out;
 		FILE * _err;
+		Severity _min_severity;
 		bool _close_streams;
+	};
+	
+	// MARK: - Redirecting logger
+	
+	class RedirectingErrorLogger: public ErrorLogging
+	{
+	public:
+		RedirectingErrorLogger();
+		~RedirectingErrorLogger();
+
+		void addChildLogger(ErrorLogging * logger);
+		void removeChildLogger(ErrorLogging * logger);
+		
+		// ErrorLogging interface
+		virtual void error(const std::string & message);
+		virtual void error(const ErrorInfo & info, const std::string & message);
+		virtual void warning(const std::string & message);
+		virtual void warning(const ErrorInfo & info, const std::string & message);
+		virtual void info(const std::string & message);
+		virtual void info(const ErrorInfo & info, const std::string & message);
+		virtual void debug(const std::string & message);
+		virtual void debug(const ErrorInfo & info, const std::string & message);
+		
+	private:
+		std::vector<ErrorLogging*> _loggers;
 	};
 }

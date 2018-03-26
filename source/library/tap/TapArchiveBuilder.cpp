@@ -44,11 +44,17 @@ namespace tap
 	ByteArray TapArchiveBuilder::build() const
 	{
 		ByteArray out;
+		std::vector<FileEntry::ValidationResult> issues;
 		for (auto && file: _files) {
-			auto validationResult = file.validate();
-			if (validationResult != FileEntry::OK) {
-				reportError(file, validationResult);
-				if (validationResult > FileEntry::ERR) {
+			if (!file.validate(issues)) {
+				bool critical = false;
+				for (auto ec: issues) {
+					reportError(file, ec);
+					if (ec > FileEntry::ERR) {
+						critical = true;
+					}
+				}
+				if (critical) {
 					// TODO: throw exception...
 					return ByteArray();
 				}
@@ -131,28 +137,28 @@ namespace tap
 		}
 		auto ename = entry.name();
 		auto esize = std::to_string(entry.bytes().size());
-		
+		auto p1    = std::to_string(entry.params().generic.param1);
 		switch (result)
 		{
 			// Warnings
 			case FileEntry::WARN_NameTooLong:
 				_logging->warning(ei, "TAP file's name is too long: `" + ename + "`"); break;
 			case FileEntry::WARN_TooManyBytes:
-				_logging->warning(ei, "TAP file's size is longer than 48kB. File: `" + ename + "`, Size: " + esize); break;
+				_logging->warning(ei, "TAP file's size is longer than 48kB: File `" + ename + "`, length " + esize); break;
 			case FileEntry::WARN_CodeInROM:
-				_logging->warning(ei, "TAP code block will be loaded to ROM. File: `" + ename + "`"); break;
+				_logging->warning(ei, "TAP code block will be loaded into ROM: File `" + ename + "`, address " + p1 + ", length " + esize); break;
 				
 			// Errors
 			case FileEntry::ERR_TooManyBytes:
-				_logging->error(ei, "TAP file's size is too long. File: `" + ename + "`, Size: " + esize); break;
+				_logging->error(ei, "TAP file's size is too long: File `" + ename + "`, length " + esize); break;
 			case FileEntry::ERR_BasicTooBig:
-				_logging->error(ei, "BASIC file is too big. File: `" + ename + "`, Size: " + esize); break;
+				_logging->error(ei, "BASIC file is too big: File `" + ename + "`, length " + esize); break;
 			case FileEntry::ERR_BasicWrongAutostart:
-				_logging->error(ei, "Autostart for BASIC program is wrong. File: `" + ename + "`, Line: " + std::to_string(entry.params().program.autostartLine)); break;
+				_logging->error(ei, "Autostart line for BASIC program is wrong: File `" + ename + "`, line " + p1); break;
 			case FileEntry::ERR_BasicWrongVariableArea:
-				_logging->error(ei, "Offset for BASIC variables area is wrong. File: `" + ename +"`"); break;
+				_logging->error(ei, "Offset for BASIC variables area is wrong: File `" + ename +"`"); break;
 			case FileEntry::ERR_CodeHeader:
-				_logging->error(ei, "Header for TAP code block is wrong. File: `" + ename +"`"); break;
+				_logging->error(ei, "Header for TAP code block is wrong: File `" + ename +"`"); break;
 				
 			default: break;
 		}

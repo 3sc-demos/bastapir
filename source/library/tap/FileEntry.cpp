@@ -66,14 +66,15 @@ namespace tap
 	
 	// MARK: - Validation
 	
-	FileEntry::ValidationResult FileEntry::validate() const
+	bool FileEntry::validate(std::vector<ValidationResult> & issues) const
 	{
-		ValidationResult result = OK;
+		issues.clear();
+		
 		if (name().size() > 10) {
-			result = WARN_NameTooLong;
+			issues.push_back(WARN_NameTooLong);
 		}
 		if (bytes().size() > 65536) {
-			return ERR_TooManyBytes;
+			issues.push_back(ERR_TooManyBytes);
 		}
 		switch (type()) {
 			case Program:
@@ -81,14 +82,14 @@ namespace tap
 				auto program = params().program;
 				if (program.autostartLine == 0 || program.autostartLine > 9999) {
 					if (program.autostartLine != Params::NO_AUTOSTART) {
-						return ERR_BasicWrongAutostart;
+						issues.push_back(ERR_BasicWrongAutostart);
 					}
 				}
 				if (program.variableArea > bytes().size()) {
-					return ERR_BasicWrongVariableArea;
+					issues.push_back(ERR_BasicWrongVariableArea);
 				}
 				if (bytes().size() > 40000) {
-					return ERR_BasicTooBig;	// 40k is my rough estimation
+					issues.push_back(ERR_BasicTooBig);	// 40k is my rough estimation
 				}
 				break;
 			}
@@ -96,10 +97,10 @@ namespace tap
 			{
 				auto code = params().code;
 				if (code.address < 16384 || (bytes().size() + code.address) > 65536) {
-					result = WARN_CodeInROM;
+					issues.push_back(WARN_CodeInROM);
 				}
 				if (code.constValue != Params::NO_AUTOSTART) {
-					return ERR_CodeHeader;
+					issues.push_back(ERR_CodeHeader);
 				}
 				break;
 			}
@@ -107,9 +108,10 @@ namespace tap
 				break;
 		}
 		if (bytes().size() > 48*1024) {
-			result = WARN_TooManyBytes;
+			issues.push_back(WARN_TooManyBytes);
 		}
-		return result;
+		
+		return issues.empty();
 	}
 	
 } // bastapir::tap

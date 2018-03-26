@@ -26,15 +26,29 @@ namespace bas
 	{
 	public:
 		
-		Keywords();
+		enum Variant
+		{
+			Variant_48K,
+			Variant_128K
+		};
+		
+		Keywords(Variant variant);
+		
+		void setVariant(Variant variant);
+		Variant variant() const;
 		
 		/// Looks whether there's a BASIC keyword at |begin| begin position. The |end| parameter defines end of
 		/// available string. Returns keyword's code or 0 if string at |begin| is unknown.
-		byte findKeyword(const Tokenizer::iterator begin, const Tokenizer::iterator end) const;
+		byte findKeyword(const Tokenizer::iterator begin, const Tokenizer::iterator end, size_t & out_matched_size) const;
 		
 		/// Looks whether there's an string escape code at |begin| position. The |end| parameter defines end of
 		/// available string. Returns escape code or 0 if escape sequence is unknown.
-		byte findEscapeCode(const Tokenizer::iterator begin, const Tokenizer::iterator end) const;
+		byte findEscapeCode(const Tokenizer::iterator begin, const Tokenizer::iterator end, size_t & out_matched_size) const;
+		
+		static const byte Code_BIN;		// code for "BIN" keyword
+		static const byte Code_REM;		// code for "REM" keyword
+		static const byte Code_NUM;		// escape code for float number representation
+		static const byte Code_ENT;		// newline character
 		
 	private:
 		
@@ -51,11 +65,16 @@ namespace bas
 			byte code;
 		};
 		
-		const std::vector<Keyword> _keywords;
-		const std::vector<EscapeCode> _escapeCodes;
+		std::vector<Keyword>	_keywords;
+		std::string 			_keywordsFirstChars;
+		std::vector<EscapeCode>	_escapeCodes;
+		Variant					_variant;
 		
-		static std::vector<Keyword> prepareKeywords();
-		static std::vector<EscapeCode> prepareEscapeCodes();
+		
+		
+		static std::vector<Keyword> prepareKeywords(Variant v);
+		static std::vector<EscapeCode> prepareEscapeCodes(Variant v);
+		static std::string prepareKeywordsFirstChars(const std::vector<Keyword> & keywords);
 	};
 	
 	

@@ -17,6 +17,7 @@
 #pragma once
 
 #include <bastapir/common/Types.h>
+#include <bastapir/common/ErrorLogging.h>
 
 namespace bastapir
 {
@@ -37,6 +38,10 @@ namespace bastapir
 			std::string content() {
 				return std::string(begin, end);
 			}
+			
+			bool empty() {
+				return begin == end;
+			}
 		};
 		
 		struct State
@@ -56,13 +61,24 @@ namespace bastapir
 		
 		// MARK: - Constructor
 		
-		Tokenizer(const Range range);
-		Tokenizer(const iterator begin, const iterator end);
+		Tokenizer(ErrorLogging * log = nullptr);
 		
 		// MARK: - Config
 		
+		/// Assing (optional) error logging to the tokenizer.
+		void setErrorLogging(ErrorLogging * logger);
+		
+		/// Resets tokenizer for a new string processing.
+		void resetTo(const Range range);
+		
+		/// Resets tokenizer for a new string processing.
+		void resetTo(const iterator begin, const iterator end);
+		
 		/// Resets position to the beginning of string
 		void reset();
+		
+		/// Resets position to the beginning of current line.
+		void resetLine();
 		
 		/// Changes behavior of isEnd() method, which will report end at the end of line.
 		/// In this mode, you need to call nextLine() to go to the next line
@@ -105,7 +121,7 @@ namespace bastapir
 		/// false if offset is out of range.
 		bool movePosition(difference offset = 1);
 		
-		/// Go immediately to the next line
+		/// Go immediately to the next line. Returns false if we're at the end of processed string.
 		bool nextLine();
 		
 		/// Returns range for current line.
@@ -117,13 +133,11 @@ namespace bastapir
 		/// Skip whitespace characters. The current position will end at first non-whitespace character or at the end.
 		bool skipWhitespace();
 		
-		/// Skips characters until function returns false or the end is reached. The function receives consecutive characters
-		/// in its paramter.
-		bool skipUntil(int (*function)(int));
+		/// 
+		bool skipWhile(int (*match_function)(int));
 		
-		bool contains(const std::string & string, bool case_insensitive = false);
-		
-		
+		bool searchFor(int (*match_function)(int));
+				
 		// MARK: - Range capture
 		
 		/// Sets capture begin and end to current position.
@@ -143,9 +157,11 @@ namespace bastapir
 		
 		void updateLineEnd();
 
-		bool			_stop_at_lf;
-		const Range		_str;
-		State 			_state;
+		bool	_stop_at_lf;
+		Range	_str;
+		State	_state;
+		
+		ErrorLogging * _log;
 		
 	};
 }

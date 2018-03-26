@@ -1,5 +1,5 @@
-/**
- * Copyright 2018 Lime - HighTech Solutions s.r.o.
+/*
+ * Copyright 2018 Juraj Durech <durech.juraj@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 #pragma once
 
 #include <bastapir/common/ByteArray.h>
+#include <bastapir/common/ErrorInfo.h>
 
 namespace bastapir
 {
@@ -40,6 +41,14 @@ namespace bastapir
 		}
 	};
 
+	inline ErrorInfo MakeError(const SourceFileInfo & info, size_t line = 0, size_t column = 0)
+	{
+		ErrorInfo ei;
+		ei.sourceFile = info.path;
+		ei.line = line;
+		ei.column = column;
+		return ei;
+	}
 	
 	
 	// MARK: - Generic source file

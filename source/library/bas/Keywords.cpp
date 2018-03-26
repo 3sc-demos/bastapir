@@ -15,6 +15,7 @@
 //
 
 #include "Keywords.h"
+#include <set>
 
 namespace bastapir
 {
@@ -52,30 +53,60 @@ namespace bas
 	
 	// MARK: - Class implementation
 	
-	Keywords::Keywords() :
-		_keywords(prepareKeywords()),
-		_escapeCodes(prepareEscapeCodes())
+	const byte Keywords::Code_BIN = 0xC4;
+	const byte Keywords::Code_REM = 0xEA;
+	const byte Keywords::Code_NUM = 0x0E;
+	const byte Keywords::Code_ENT = 0x0D;
+	
+	Keywords::Keywords(Variant v) :
+		_keywords(prepareKeywords(v)),
+		_keywordsFirstChars(prepareKeywordsFirstChars(_keywords)),
+		_escapeCodes(prepareEscapeCodes(v)),
+		_variant(v)
 	{
 	}
 	
-	byte Keywords::findKeyword(Tokenizer::iterator begin, Tokenizer::iterator end) const
+	void Keywords::setVariant(Variant variant) {
+		if (variant != _variant) {
+			_keywords = prepareKeywords(variant);
+			_keywordsFirstChars = prepareKeywordsFirstChars(_keywords);
+			_escapeCodes = prepareEscapeCodes(variant);
+			_variant = variant;
+		}
+	}
+	
+	Keywords::Variant Keywords::variant() const {
+		return _variant;
+	}
+	
+	byte Keywords::findKeyword(Tokenizer::iterator begin, Tokenizer::iterator end, size_t & out_matched_size) const
 	{
-		for (auto && sc: _keywords) {
-			if (matchStringCI(sc.primary, begin, end)) {
-				return sc.code;
-			}
-			if (!sc.alternate.empty() && matchStringCI(sc.alternate, begin, end)) {
-				return sc.code;
+		if (begin != end) {
+			// Look if first char is in keywords 
+			if (_keywordsFirstChars.find(tolower(*begin)) != std::string::npos) {
+				for (auto && sc: _keywords) {
+					if (matchStringCI(sc.primary, begin, end)) {
+						out_matched_size = sc.primary.size();
+						return sc.code;
+					}
+					if (!sc.alternate.empty() && matchStringCI(sc.alternate, begin, end)) {
+						out_matched_size = sc.alternate.size();
+						return sc.code;
+					}
+				}
 			}
 		}
 		return 0;
 	}
 	
-	byte Keywords::findEscapeCode(Tokenizer::iterator begin, Tokenizer::iterator end) const
+	byte Keywords::findEscapeCode(Tokenizer::iterator begin, Tokenizer::iterator end, size_t & out_matched_size) const
 	{
-		for (auto && sc: _escapeCodes) {
-			if (matchString(sc.sequence, begin, end)) {
-				return sc.code;
+		if (begin != end) {
+			for (auto && sc: _escapeCodes) {
+				if (matchString(sc.sequence, begin, end)) {
+					out_matched_size = sc.sequence.size();
+					return sc.code;
+				}
 			}
 		}
 		return 0;
@@ -189,7 +220,7 @@ namespace bas
 		nullptr     , nullptr
 	};
 	
-	std::vector<Keywords::Keyword> Keywords::prepareKeywords()
+	std::vector<Keywords::Keyword> Keywords::prepareKeywords(Variant v)
 	{
 		byte code = 0xA5;	// first code - RND
 		
@@ -205,9 +236,26 @@ namespace bas
 			}
 			table.push_back(Keyword { primary, secondary, code++ });
 		}
+		if (v == Variant_128K) {
+			table.push_back(Keyword { "spectrum", "", 0xA3 });
+			table.push_back(Keyword { "play", "", 0xA4 });
+		}
 		return table;
 	}
 	
+	std::string Keywords::prepareKeywordsFirstChars(const std::vector<Keyword> & keywords)
+	{
+		std::set<char> chars;
+		for (auto && keyword: keywords) {
+			chars.insert(*keyword.primary.begin());
+		}
+		std::string result;
+		result.reserve(chars.size());
+		for (char c: chars) {
+			result.push_back(c);
+		}
+		return result;
+	}
 	
 	// MARK: - Escape codes
 	
@@ -228,8 +276,7 @@ namespace bas
 		nullptr
 	};
 	
-	//
-	std::vector<Keywords::EscapeCode> Keywords::prepareEscapeCodes()
+	std::vector<Keywords::EscapeCode> Keywords::prepareEscapeCodes(Variant v)
 	{
 		byte code = 0x80;
 		
