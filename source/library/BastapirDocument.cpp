@@ -131,7 +131,7 @@ namespace bastapir
 		if (!parser.parse(file.string(), file.info())) {
 			return false;
 		}
-		printf("Crappy length %lu\n", parser.programBytes().size());
+		//printf("Crappy length %lu\n", parser.programBytes().size());
 		std::string autostart_var;
 		bool resolved;
 		std::tie(resolved, autostart_var) = parser.resolveVariable("autostart");
