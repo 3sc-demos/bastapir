@@ -54,7 +54,7 @@ namespace bastapir
 		std::string 	captureWord(bool lowercase);
 		bool		 	captureNumber(long & value);
 		bool		 	captureString(std::string & captured);
-		
+		bool		 	captureWordOrString(std::string & captured);
 		// Members
 		
 		ErrorLogging * _log;

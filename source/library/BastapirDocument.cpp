@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-#include <bastapir/Bastapir.h>
+#include <bastapir/BastapirDocument.h>
 
 namespace bastapir
 {
@@ -70,6 +70,7 @@ namespace bastapir
 	
 	bool BastapirDocument::doParseLine()
 	{
+		_tokenizer._debugInfo();
 		_tokenizer.skipWhitespace();
 		char c = _tokenizer.charAt();
 		if (c == 0) {
@@ -111,15 +112,13 @@ namespace bastapir
 			return false;
 		}
 		_tokenizer.skipWhitespace();
-		std::string programName = captureWord(false);
+		std::string programName;
+		if (!captureWordOrString(programName)) {
+			return false;
+		}
 		if (programName.empty()) {
 			// get name from file
-			auto off = path.rfind('/');
-			if (off != path.npos) {
-				programName = path.substr(off + 1);
-			} else {
-				programName = path;
-			}
+			programName = Path::components(path).fileNameNoExt;
 		}
 		
 		// Load & parse basic file
@@ -132,11 +131,11 @@ namespace bastapir
 		if (!parser.parse(file.string(), file.info())) {
 			return false;
 		}
-		
+		printf("Crappy length %lu\n", parser.programBytes().size());
 		std::string autostart_var;
 		bool resolved;
 		std::tie(resolved, autostart_var) = parser.resolveVariable("autostart");
-		long autostart_line = 10;
+		long autostart_line = tap::FileEntry::Params::NO_AUTOSTART;
 		if (resolved) {
 			autostart_line = std::stol(autostart_var);
 		}
@@ -165,15 +164,13 @@ namespace bastapir
 			return false;
 		}
 		_tokenizer.skipWhitespace();
-		std::string codeName = captureWord(false);
+		std::string codeName;
+		if (!captureWordOrString(codeName)) {
+			return false;
+		}
 		if (codeName.empty()) {
 			// get name from file
-			auto off = path.rfind('/');
-			if (off != path.npos) {
-				codeName = path.substr(off + 1);
-			} else {
-				codeName = path;
-			}
+			codeName = Path::components(path).fileNameNoExt;
 		}
 		
 		SourceBinaryFile file = SourceBinaryFile(path);
@@ -255,6 +252,16 @@ namespace bastapir
 		_tokenizer.movePosition(-1);
 		captured = _tokenizer.capture().content();
 		_tokenizer.movePosition(1);
+		return true;
+	}
+	
+	bool BastapirDocument::captureWordOrString(std::string & captured)
+	{
+		char c = _tokenizer.charAt();
+		if (c == '"') {
+			return captureString(captured);
+		}
+		captured = captureWord(false);
 		return true;
 	}
 	

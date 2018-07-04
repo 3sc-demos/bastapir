@@ -85,6 +85,7 @@ namespace bas
 		bool doParseString();
 		bool doParseLineEscape(bool is_line_begin);
 		bool doParseKeywords(bool is_line_begin);
+		bool doParseREM();
 
 		U16 nextLineNumber();
 		
@@ -99,6 +100,7 @@ namespace bas
 		void writeRange(const ByteRange & range);
 		
 		bool writeLineNumber(int n);
+		bool writeLastLineBytes();
 		bool writeNumber(double n, const std::string & textual_representation);
 		
 		
@@ -150,8 +152,9 @@ namespace bas
 			U16 basicLineNumber = 0;
 			U16 basicLineStep = 2;
 			U16 processedLines = 0;
+			size_t beginLineBytesOffset = 0;
 			bool doNotIncrementNextLine = false;
-			bool inREM = false;
+			bool lineBegin = true;
 		};
 		CTX _ctx;
 		ByteArray _output;

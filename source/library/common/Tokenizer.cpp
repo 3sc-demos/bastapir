@@ -141,12 +141,14 @@ namespace bastapir
 	
 	char Tokenizer::charAt(difference offset) const
 	{
-		if (offset > 0) {
-			if (offset >= std::distance(_state.pos, limit().end)) {
+		if (offset >= 0) {
+			auto dist = std::distance(_state.pos, limit().end);
+			if (offset >= dist) {
 				return 0;
 			}
 		} else if (offset < 0) {
-			if (offset < std::distance(_state.pos, limit().begin)) {
+			auto dist = std::distance(_state.pos, limit().begin);
+			if (offset < dist) {
 				return 0;
 			}
 		}
@@ -166,13 +168,15 @@ namespace bastapir
 	
 	bool Tokenizer::movePosition(difference offset)
 	{
-		if (offset > 0) {
-			if (offset >= std::distance(_state.pos, limit().end)) {
+		if (offset >= 0) {
+			auto dist = std::distance(_state.pos, limit().end);
+			if (offset > dist) {
 				return false;
 			}
 		} else if (offset < 0) {
-			if (offset < std::distance(_state.pos, limit().begin)) {
-				return 0;
+			auto dist = std::distance(_state.pos, limit().begin);
+			if (offset < dist) {
+				return false;
 			}
 		}
 		_state.pos += offset;
@@ -186,7 +190,8 @@ namespace bastapir
 		} else {
 			_CHECK_LE();
 		}
-
+		// Set position directly to the end of line
+		_state.pos = _state.line.end;
 		char c = realGetChar();
 		if (c != 0) {
 			if (c == '\n') {
@@ -204,8 +209,11 @@ namespace bastapir
 			}
 			_state.lineNumber++;
 		}
-		
+		// Reset line state
+		_state.line.begin = _state.pos;
+		_state.line.end   = _state.pos;
 		_state.updateLineEnd = true;
+		// 
 		if (_stop_at_lf) {
 			updateLineEnd();
 			resetCapture();
@@ -278,6 +286,32 @@ namespace bastapir
 		auto c = capture();
 		resetCapture();
 		return c;
+	}
+	
+	void Tokenizer::_debugInfo() const
+	{
+		Range dbg_lim = limit();
+		std::string tmp;
+		std::string pos;
+		std::string rng;
+		auto it = dbg_lim.begin;
+		while (it != dbg_lim.end) {
+			char c = *it;
+			if (c == '\n') {
+				tmp += u8"↵";
+			} else if (isspace(c)){
+				tmp += u8"·";
+			} else {
+				tmp += c;
+			}
+			pos += it == _state.pos ? '^' : ' ';
+			rng += it >= _state.capture.begin && it < _state.capture.end ? '~' : ' ';
+			it++;
+		}
+		printf("  | Stop at LF is %s\n", _stop_at_lf ? "ON " : "OFF");
+		printf("  | TEXT : %s |\n", tmp.c_str());
+		printf("  |      : %s | < position\n", pos.c_str());
+		printf("  |      : %s | < capture\n", rng.c_str());
 	}
 	
 	

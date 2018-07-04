@@ -87,10 +87,12 @@ namespace bas
 				for (auto && sc: _keywords) {
 					if (matchStringCI(sc.primary, begin, end)) {
 						out_matched_size = sc.primary.size();
+						printf("<<< KW: %s\n", sc.primary.c_str());
 						return sc.code;
 					}
 					if (!sc.alternate.empty() && matchStringCI(sc.alternate, begin, end)) {
 						out_matched_size = sc.alternate.size();
+						printf("<<< KW: %s\n", sc.alternate.c_str());
 						return sc.code;
 					}
 				}

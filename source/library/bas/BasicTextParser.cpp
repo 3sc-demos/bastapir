@@ -110,6 +110,7 @@ namespace bas
 			_ctx = CTX();
 			_ctx.pass = pass;
 			_output.clear();
+			_tokenizer.reset();
 			//
 			while (true) {
 				if (!doParseLine()) {
@@ -129,6 +130,7 @@ namespace bas
 					_log->error(errInfo(), "BASIC program is empty.");
 					return false;
 				}
+				writeLastLineBytes();
 				if (_output.empty()) {
 					_log->error(errInfo(), "No bytes were generated from BASIC program.");
 					return false;
@@ -141,14 +143,12 @@ namespace bas
 	
 	bool BasicTextParser::doParseLine()
 	{
-		bool line_begin = true;
-		
-		_ctx.inREM = false;
+		_ctx.lineBegin = true;
 		
 		while (true) {
 			// Is this first character in line?
-			bool is_line_begin = line_begin;
-			line_begin = false;
+			bool is_line_begin = _ctx.lineBegin;
+			_ctx.lineBegin = false;
 			
 			// Skip leading whitespace
 			_tokenizer.skipWhitespace();
@@ -422,25 +422,10 @@ namespace bas
 	bool BasicTextParser::doParseLineEscape(bool is_line_begin)
 	{
 		bool next_is_end = _tokenizer.charAt(1) == 0;
-		if (!_ctx.inREM || next_is_end) {
-			if (!next_is_end) {
-				_log->warning(errInfoLC(), "Characters after line escape (\\) will be ignored.");
-			}
-			// The BASIC line will continue on next source code line.
-			_tokenizer.nextLine();
-			//
-		} else {
-			// Escape sequence in REM statement
-			_tokenizer.movePosition();
-			size_t matched_size;
-			auto code = _keywords.findEscapeCode(_tokenizer.position(), _tokenizer.line().end, matched_size);
-			if (code == 0) {
-				_log->error(errInfoLC(), "Invalid escaped character in REM statement.");
-				return false;
-			}
-			_tokenizer.movePosition(matched_size);
-			writeByte(code);
+		if (!next_is_end) {
+			_log->warning(errInfoLC(), "Characters after line escape (\\) will be ignored.");
 		}
+		_tokenizer.nextLine();
 		return true;
 	}
 	
@@ -481,7 +466,8 @@ namespace bas
 				return true;
 			}
 			if (code == Keywords::Code_REM) {
-				_ctx.inREM = true;
+				writeByte(code);
+				return doParseREM();
 			}
 			
 		} else if (isalpha(c)) {
@@ -491,10 +477,59 @@ namespace bas
 			
 		} else {
 			// Not a keyword, not a word, write that character to the output
+			_tokenizer.movePosition();
 			code = c;
 		}
 		// Looks good, write code to the stream.
 		writeByte(code);
+		return true;
+	}
+	
+	bool BasicTextParser::doParseREM()
+	{
+		bool was_space = false;
+		_tokenizer.skipWhitespace();
+		while (!_tokenizer.isEnd()) {
+			char c = _tokenizer.charAt();
+			if (c == '\\') {
+				was_space = false;
+				if (_tokenizer.charAt(1) == 0) {
+					// line escape...
+					_tokenizer.nextLine();
+					continue;
+				}
+				// Escape sequence in REM statement
+				_tokenizer.movePosition();
+				size_t matched_size;
+				auto code = _keywords.findEscapeCode(_tokenizer.position(), _tokenizer.line().end, matched_size);
+				if (code == 0) {
+					_log->error(errInfoLC(), "Invalid escaped character in REM statement.");
+					return false;
+				}
+				_tokenizer.movePosition(matched_size);
+				writeByte(code);
+				
+			} else if (isspace(c)) {
+				if (!was_space) {
+					writeByte(' ');
+					was_space = true;
+				}
+				_tokenizer.movePosition();
+				
+			} else if (isalnum(c)) {
+				// Try to match whole words
+				was_space = false;
+				writeRange(MakeRange(captureVariableName().content()));
+			
+			} else {
+				was_space = false;
+				_tokenizer.movePosition();
+				writeByte(c);
+			}
+		}
+		// Success escape from REM means that we need to process next line
+		// as new one.
+		_ctx.lineBegin = true;
 		return true;
 	}
 	
@@ -553,6 +588,7 @@ namespace bas
 	{
 		if (_ctx.pass > 1) {
 			_output.push_back(b);
+			printf(">>> %02x    %lu\n", b, _output.size());
 		}
 	}
 	
@@ -560,6 +596,11 @@ namespace bas
 	{
 		if (_ctx.pass > 1) {
 			_output.append(range);
+			printf(">>> ");
+			for (auto b: range) {
+				printf("%02x ", b);
+			}
+			printf("     %lu\n", _output.size());
 		}
 	}
 	
@@ -582,8 +623,37 @@ namespace bas
 		_ctx.basicLineNumber = n;
 		_ctx.processedLines++;
 		
-		writeRange(MakeRange(_ctx.basicLineNumber));
-		
+		if (_ctx.pass > 1) {
+			// Serialize line number...
+			// Write line number in BE
+			auto end_last_line = _output.size();
+			byte line_bytes[4] = { (byte)(_ctx.basicLineNumber >> 8), (byte)(_ctx.basicLineNumber & 0xff), 0, 0 };
+			writeRange(MakeRange(line_bytes));
+			// Capture point, where we need to write back size of this just started line
+			auto begin_last_line = _ctx.beginLineBytesOffset;
+			_ctx.beginLineBytesOffset = _output.size();
+			if (end_last_line > 0 && begin_last_line >= 4) {
+				U16 line_size = end_last_line - begin_last_line;
+				// we need to write back size of current line.
+				_output.at(begin_last_line - 2) =  line_size       & 0xFF;
+				_output.at(begin_last_line - 1) = (line_size >> 8) & 0xFF;
+			}
+		}
+		return true;
+	}
+	
+	bool BasicTextParser::writeLastLineBytes()
+	{
+		if (_ctx.pass > 1) {
+			auto end_last_line = _output.size();
+			auto begin_last_line = _ctx.beginLineBytesOffset;
+			if (end_last_line > 0 && begin_last_line >= 4) {
+				U16 line_size = end_last_line - begin_last_line;
+				// we need to write back size of current line.
+				_output.at(begin_last_line - 2) =  line_size       & 0xFF;
+				_output.at(begin_last_line - 1) = (line_size >> 8) & 0xFF;
+			}
+		}
 		return true;
 	}
 	
@@ -595,17 +665,19 @@ namespace bas
 			_log->error(errInfoLC(), "Exponent out of range (number is too big)");
 			return false;
 		}
-		if (_ctx.pass > 1) {
-			_output.append(MakeRange(textual_representation));
-			if (!_ctx.inREM) {
-				_output.push_back(Keywords::Code_NUM);
-				_output.push_back(exponent);
-				_output.push_back((mantissa >> 24) & 0xFF);
-				_output.push_back((mantissa >> 16) & 0xFF);
-				_output.push_back((mantissa >> 8 ) & 0xFF);
-				_output.push_back( mantissa        & 0xFF);
-			}
-		}
+		// Text representation
+		writeRange(MakeRange(textual_representation));
+		
+		// Binary representation
+		byte b_repr[6];
+		b_repr[0] = Keywords::Code_NUM;
+		b_repr[1] = exponent;
+		b_repr[2] = (mantissa >> 24) & 0xFF;
+		b_repr[3] = (mantissa >> 16) & 0xFF;
+		b_repr[4] = (mantissa >> 8 ) & 0xFF;
+		b_repr[5] =  mantissa        & 0xFF;
+		writeRange(MakeRange(b_repr));
+		
 		return true;
 	}
 	

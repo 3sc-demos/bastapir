@@ -14,7 +14,8 @@
 // limitations under the License.
 //
 
-#include <bastapir/Bastapir.h>
+#include <bastapir/common/Path.h>
+#include <bastapir/BastapirDocument.h>
 #include <bastapir/bas/Keywords.h>
 
 using namespace bastapir;
@@ -22,7 +23,19 @@ using namespace bastapir::tap;
 
 int main(int argc, const char * argv[])
 {
-	BastapirDocument document("test.recipe");
+	FileErrorLogger logger;
+	BastapirDocument doc(&logger);
+	auto path = Path(argv[1]);
+	auto file = SourceTextFile(path);
+	auto result = doc.processDocument(file);
+	if (result) {
+		auto bytes = doc.archiveBytes();
+		FILE * f = fopen(argv[2], "wb");
+		if (f) {
+			fwrite(bytes.data(), 1, bytes.size(), f);
+			fclose(f);
+		}
+	}
 	
 	return 0;
 }

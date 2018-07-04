@@ -18,6 +18,7 @@
 
 #include <bastapir/common/ByteArray.h>
 #include <bastapir/common/ErrorInfo.h>
+#include <bastapir/common/Path.h>
 
 namespace bastapir
 {
@@ -58,7 +59,7 @@ namespace bastapir
 	public:
 		/// Opens a source file defined in |info| structure. Method always
 		/// returns object, so you need to investigate whetner is valid afterwards.
-		static SourceFile open(const std::string & path, SourceFileInfo::Mode mode);
+		static SourceFile open(const Path & path, SourceFileInfo::Mode mode);
 		
 		virtual ~SourceFile();
 		
@@ -94,7 +95,7 @@ namespace bastapir
 	class SourceTextFile: public SourceFile
 	{
 	public:
-		SourceTextFile(const std::string & path);
+		SourceTextFile(const Path & path);
 		~SourceTextFile();
 		
 		/// Returns reference to string representation of file content.
@@ -111,7 +112,7 @@ namespace bastapir
 	class SourceBinaryFile: public SourceFile
 	{
 	public:
-		SourceBinaryFile(const std::string & path);
+		SourceBinaryFile(const Path & path);
 		~SourceBinaryFile();
 		
 		/// Returns bytes representation of file content.

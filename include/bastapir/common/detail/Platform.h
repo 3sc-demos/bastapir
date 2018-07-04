@@ -16,20 +16,36 @@
 
 #pragma once
 
-#include <bastapir/common/detail/Platform.h>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <assert.h>
+//
+// Compatibility with non-clang compilers.
+//
+#ifndef __has_builtin
+	#define __has_builtin(x)	0
+#endif
+#ifndef __has_feature
+	#define __has_feature(x)	0
+#endif
+#ifndef __has_extension
+	#define __has_extension		__has_feature
+#endif
 
-namespace bastapir
-{
-	typedef uint32_t	U32;
-	typedef uint16_t	U16;
-	typedef uint8_t		U8;
-	typedef uint8_t		byte;
-	
-	typedef std::vector<std::string> StringVector;
-	
-}
+//
+// Small platform switch
+//
+#ifdef __APPLE__
 
+	#include <stdlib.h>
+	#include <string.h>
+
+	#define BASTAPIR_UNIX	1
+	#define BASTAPIR_WIN	0
+
+#elif defined(WINAPI_FAMILY)
+
+	#include <sdkddkver.h>
+	#include <Windows.h>
+
+	#define BASTAPIR_UNIX	0
+	#define BASTAPIR_WIN	1
+
+#endif

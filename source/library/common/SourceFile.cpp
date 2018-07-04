@@ -32,7 +32,7 @@ namespace bastapir
 	{
 	}
 	
-	SourceFile SourceFile::open(const std::string & path, SourceFileInfo::Mode mode)
+	SourceFile SourceFile::open(const Path & path, SourceFileInfo::Mode mode)
 	{
 		if (mode == SourceFileInfo::Text) {
 			return SourceTextFile(path);
@@ -77,11 +77,11 @@ namespace bastapir
 			return;
 		}
 		// Determine length
-		long length = fseek(f, 0, SEEK_END);
-		if (length < 0) {
+		if (fseek(f, 0, SEEK_END) < 0) {
 			_error = "Unable to determine length of the file (" + std::string(strerror(errno)) + ")";
 			return;
 		}
+		long length = ftell(f);
 		if (fseek(f, 0, SEEK_SET) < 0) {
 			_error = "Cannot rewind file (" + std::string(strerror(errno)) + ")";
 			return;
@@ -101,17 +101,19 @@ namespace bastapir
 		// Read data
 		
 		bool result = true;
-		while (!feof(f)) {
-			size_t rc = fread(buffer.data(), buffer.size(), 1, f);
-			if (rc == 0) {
-				_error = "Cannot read from file (" + std::string(strerror(errno)) + ")";
-				result = false;
+		while (true) {
+			size_t res = fread(buffer.data(), 1, buffer.size(), f);
+			if (!res) {
+				if (ferror(f)) {
+					_error = "Cannot read from file (" + std::string(strerror(errno)) + ")";
+					result = false;
+				}
 				break;
 			}
 			if (is_text) {
-				out_str->append((const char*)buffer.data(), rc);
+				out_str->append((const char*)buffer.data(), res);
 			} else {
-				out_bin->append(buffer.data(), rc);
+				out_bin->append(buffer.data(), res);
 			}
 		}
 		fclose(f);
@@ -121,8 +123,8 @@ namespace bastapir
 	
 	// MARK: - Text file -
 	
-	SourceTextFile::SourceTextFile(const std::string & path) :
-		SourceFile(SourceFileInfo { path, SourceFileInfo::Text })
+	SourceTextFile::SourceTextFile(const Path & path) :
+		SourceFile(SourceFileInfo { path.path, SourceFileInfo::Text })
 	{
 		open(&_content, nullptr);
 	}
@@ -139,8 +141,8 @@ namespace bastapir
 	
 	// MARK: - Binary file -
 	
-	SourceBinaryFile::SourceBinaryFile(const std::string & path) :
-		SourceFile(SourceFileInfo { path, SourceFileInfo::Binary })
+	SourceBinaryFile::SourceBinaryFile(const Path & path) :
+		SourceFile(SourceFileInfo { path.path, SourceFileInfo::Binary })
 	{
 		open(nullptr, &_content);
 	}

@@ -152,6 +152,8 @@ namespace bastapir
 		/// Returns current capture and then resets capture range to current position
 		Range captureAndReset();
 		
+		void _debugInfo() const;
+		
 	private:
 
 		bool isRealEnd() const;
