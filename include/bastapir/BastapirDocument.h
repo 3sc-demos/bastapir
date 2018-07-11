@@ -29,6 +29,8 @@ namespace bastapir
 		
 		bool processDocument(const SourceTextFile & file);
 		const ByteRange archiveBytes() const;
+		const std::string & outputFile() const;
+		bool hasOutputFile() const;
 		
 	private:
 		
@@ -37,6 +39,7 @@ namespace bastapir
 		
 		bool doParseCmdProgram();
 		bool doParseCmdCode();
+		bool doParseCmdOutput();
 		
 		/// Returns simple ErrorInfo structure.
 		ErrorInfo errInfo() const {
@@ -45,9 +48,7 @@ namespace bastapir
 		
 		/// Returns ErrorInfo structure with current line & column.
 		ErrorInfo errInfoLC() const {
-			auto pos_info = _tokenizer.positionInfo();
-			pos_info.lineNumber++;
-			pos_info.offsetAtLine++;
+			auto pos_info = _tokenizer.positionInfoForLog();
 			return MakeError(_sourceFileInfo, pos_info.lineNumber, pos_info.offsetAtLine);
 		}
 		
@@ -63,5 +64,6 @@ namespace bastapir
 		
 		Tokenizer _tokenizer;
 		ByteArray _archiveBytes;
+		std::string _outputFile;
 	};
 }

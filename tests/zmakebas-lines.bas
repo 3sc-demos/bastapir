@@ -6,7 +6,7 @@
 #
 # See `demolbl.bas' for a label-using version.
 
-
+@autostart:
 10 rem zmakebas demo
 
 # tabs (as below) are fine (they're removed)

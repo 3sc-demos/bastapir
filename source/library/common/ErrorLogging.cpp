@@ -24,7 +24,8 @@ namespace bastapir
 		_out(std_out),
 		_err(err_out),
 		_min_severity(SevInfo),
-		_close_streams(close_streams)
+		_close_streams(close_streams),
+		_info({0,0})
 	{
 	}
 	
@@ -65,15 +66,19 @@ namespace bastapir
 	// MARK: - ErrorLogging interface
 	
 	void FileErrorLogger::error(const std::string & message) {
+		_info.errorsCount++;
 		dump(_err, SevError, ErrorInfo(), message);
 	}
 	void FileErrorLogger::error(const ErrorInfo & info, const std::string & message) {
+		_info.errorsCount++;
 		dump(_err, SevError, info, message);
 	}
 	void FileErrorLogger::warning(const std::string & message) {
+		_info.warningsCount++;
 		dump(_err, SevWarning, ErrorInfo(), message);
 	}
 	void FileErrorLogger::warning(const ErrorInfo & info, const std::string & message) {
+		_info.warningsCount++;
 		dump(_err, SevWarning, info, message);
 	}
 	void FileErrorLogger::info(const std::string & message) {
@@ -88,6 +93,13 @@ namespace bastapir
 	void FileErrorLogger::debug(const ErrorInfo & info, const std::string & message) {
 		dump(_out, SevDebug, info, message);
 	}
+	ErrorLogging::Info FileErrorLogger::getInfo() const {
+		return _info;
+	}
+	void FileErrorLogger::resetInfo() {
+		_info = {0, 0};
+	}
+	
 	
 	// MARK: - Private
 	
@@ -103,10 +115,10 @@ namespace bastapir
 			out += ei.sourceFile;
 			if (ei.line > 0) {
 				out += ":";
-				out += ei.line;
+				out += std::to_string(ei.line);
 				if (ei.column > 0) {
 					out += ":";
-					out += ei.column;
+					out += std::to_string(ei.column);
 				}
 			}
 			out += ": ";
@@ -131,7 +143,8 @@ namespace bastapir
 	
 	// MARK: - Redirecting logger -
 	
-	RedirectingErrorLogger::RedirectingErrorLogger()
+	RedirectingErrorLogger::RedirectingErrorLogger() :
+		_info({0,0})
 	{
 	}
 	
@@ -158,6 +171,7 @@ namespace bastapir
 		error(ErrorInfo(), message);
 	}
 	void RedirectingErrorLogger::error(const ErrorInfo & info, const std::string & message) {
+		_info.errorsCount++;
 		for (auto log: _loggers) {
 			log->error(info, message);
 		}
@@ -166,6 +180,7 @@ namespace bastapir
 		warning(ErrorInfo(), message);
 	}
 	void RedirectingErrorLogger::warning(const ErrorInfo & info, const std::string & message) {
+		_info.warningsCount++;
 		for (auto log: _loggers) {
 			log->warning(info, message);
 		}
@@ -185,6 +200,12 @@ namespace bastapir
 		for (auto log: _loggers) {
 			log->debug(info, message);
 		}
+	}
+	ErrorLogging::Info RedirectingErrorLogger::getInfo() const {
+		return _info;
+	}
+	void RedirectingErrorLogger::resetInfo() {
+		_info = {0, 0};
 	}
 
 } // bastapir

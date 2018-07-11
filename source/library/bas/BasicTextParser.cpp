@@ -23,25 +23,49 @@ namespace bas
 {
 	// MARK: - Class implementation -
 	
-	BasicTextParser::BasicTextParser(ErrorLogging * log, Keywords::Variant variant) :
+	BasicTextParser::BasicTextParser(ErrorLogging * log, Keywords::Dialect dialect) :
 		_log(log),
-		_keywords(variant),
+		_keywords(dialect),
 		_tokenizer(log)
 	{
 		assert(_log != nullptr);
 	}
 	
+	void BasicTextParser::setOptions(const Options & options)
+	{
+		_options = options;
+	}
+	
+	const BasicTextParser::Options & BasicTextParser::options() const
+	{
+		return _options;
+	}
+
+	BasicTextParser::Options & BasicTextParser::options()
+	{
+		return _options;
+	}
+	
 	bool BasicTextParser::setConstants(std::vector<Variable> &constants)
 	{
+		bool result = true;
+		
 		_constants.clear();
 		for (auto && c: constants) {
-			if (_constants.find(c.name) != _constants.end()) {
+			if (_constants.find(c.name) == _constants.end()) {
+				if (c.isResolved) {
+					_constants[c.name] = c;
+				} else {
+					// Variable has no value.
+					_log->error(errInfo(), "Constant `" + c.name + "` injected into BASIC has no value assigned.");
+					result = false;
+				}
+			} else {
+				// Variable already exists.
 				_log->warning(errInfo(), "Constant `" + c.name + "` injected into BASIC source already exists. Ignoring new value.");
-				continue;
 			}
-			_constants[c.name] = c;
 		}
-		return true;
+		return result;
 	}
 	
 	std::tuple<bool, std::string> BasicTextParser::resolveVariable(const std::string & variable_name) const
@@ -53,13 +77,13 @@ namespace bas
 		return std::make_tuple(false, "");
 	}
 	
-	bool BasicTextParser::parse(const std::string & source, const SourceFileInfo & source_info, Keywords::Variant variant)
+	bool BasicTextParser::parse(const std::string & source, const SourceFileInfo & source_info, Keywords::Dialect dialect)
 	{
 		// Prepare internal structures
 		_sourceFileInfo = source_info;
 		_tokenizer.setStopAtLineEnd(true);
 		_tokenizer.resetTo(source.begin(), source.end());
-		_keywords.setVariant(variant);
+		_keywords.setDialect(dialect);
 		
 		// Clear variables & validate constants
 		_variables.clear();
@@ -106,9 +130,8 @@ namespace bas
 	bool BasicTextParser::doParse()
 	{
 		for (U16 pass = 1; pass <= 2; ++pass) {
-			// Prepare ctx
-			_ctx = CTX();
-			_ctx.pass = pass;
+			// Prepare CTX
+			_ctx = makeContext(pass);
 			_output.clear();
 			_tokenizer.reset();
 			//
@@ -152,21 +175,23 @@ namespace bas
 			
 			// Skip leading whitespace
 			_tokenizer.skipWhitespace();
-			char c = _tokenizer.charAt();
-			if (0 == c) {
-				// End of line, store new line character...
-				writeByte(Keywords::Code_ENT);
+			const char c = _tokenizer.charAt();
+			if (c == 0) {
+				if (!writeLineIsEmpty()) {
+					// End of line, store new line character, if line was not empty...
+					writeLastLineBytes();
+				}
 				return true;
 			}
 			
 			// #### Comment
-			if ('#' == c) {
+			if (c == '#') {
 				// ignore rest of the line. This is source code comment
 				return true;
 			}
 			
 			// #### Escape to next line
-			if ('\\' == c) {
+			if (c == '\\') {
 				if (!doParseLineEscape(is_line_begin)) {
 					return false;
 				}
@@ -174,7 +199,7 @@ namespace bas
 			}
 			
 			// #### Variables
-			if ('@' == c) {
+			if (c == '@') {
 				if (!doParseVariable(is_line_begin)) {
 					return false;
 				}
@@ -194,7 +219,7 @@ namespace bas
 				}
 				continue;
 			}
-			if ('.' == c) {
+			if (c == '.') {
 				// Check if we're at the beginnig of line.
 				if (is_line_begin) {
 					_log->error(errInfoLC(), "Wrong line number.");
@@ -208,10 +233,10 @@ namespace bas
 			}
 			
 			// #### String
-			if ('"' == c) {
+			if (c == '"') {
 				// String should not be at the beginning of line.
 				if (is_line_begin) {
-					_log->error(errInfoLC(), "Nonsense in BASIC.");
+					_log->error(errInfoLC(), "Nonsense in BASIC. String cannot be at the beginning of line.");
 					return false;
 				}
 				if (!doParseString()) {
@@ -225,7 +250,7 @@ namespace bas
 				return false;
 			}
 			
-			// End of mail loop. We can process next character now.
+			// End of main loop. We can process next character now.
 		}
 		return true;
 	}
@@ -241,7 +266,7 @@ namespace bas
 			return false;
 		}
 		int number = std::stoi(line_range.content());
-		return writeLineNumber(number);
+		return writeLineNumber(number, false);
 	}
 	
 	
@@ -250,7 +275,7 @@ namespace bas
 		// Regular number
 		char c1 = _tokenizer.charAt();
 		if (c1 == '0' || as_binary) {
-			char c2 = _tokenizer.charAt(1);
+			const char c2 = _tokenizer.charAt(1);
 			// Hexa
 			if (c2 == 'x' || c2 == 'X') {
 				// hexadecimal, as 0x or 0X
@@ -343,8 +368,7 @@ namespace bas
 			if (is_line_begin) {
 				// This is line number, we need to generate a next number & mark that
 				// next real line should not increase line number.
-				variable.setValue(std::to_string(nextLineNumber()));
-				_ctx.doNotIncrementNextLine = true;
+				variable.setValue(std::to_string(currentBasicLineNumber()));
 			}
 			// Register variable.
 			if (!addVariable(variable, true)) {
@@ -353,17 +377,13 @@ namespace bas
 		} else {
 			// 2nd pass is different. We need to use stored variables.
 			if (is_line_begin) {
-				// We already have value for this variable. Just consume line number
-				// and mark "do not increment" flag as we did in first pass.
-				nextLineNumber();
-				_ctx.doNotIncrementNextLine = true;
-				//
+				// We already have value for this variable. So, do nothing.
 			} else {
 				// Resolve variable. Currently only numeric variables are supported.
 				bool resolved; std::string value;
 				std::tie(resolved, value) = resolveVariable(variable_name);
 				if (!resolved) {
-					_log->error(errInfoLC(), "Unable to resolve value of variable `" + variable_name + "`. It looks like an internal error :(");
+					_log->error(errInfoLC(), "Unable to resolve value of variable `" + variable_name + "`. This looks like an internal error :(");
 					return false;
 				}
 				double dbl_value = std::stod(value);
@@ -410,6 +430,8 @@ namespace bas
 				writeRange(MakeRange(_tokenizer.capture().content()));
 				_tokenizer.movePosition(1 + captured_size);
 				_tokenizer.resetCapture();
+				// Write translated bytek
+				writeByte(code);
 				continue;
 			}
 		}
@@ -432,7 +454,7 @@ namespace bas
 	
 	bool BasicTextParser::doParseKeywords(bool is_line_begin)
 	{
-		char c = _tokenizer.charAt();
+		const char c = _tokenizer.charAt();
 		
 		size_t matched_size;
 		byte code = _keywords.findKeyword(_tokenizer.position(), _tokenizer.line().end, matched_size);
@@ -444,8 +466,7 @@ namespace bas
 			}
 			// Now we know that code is keyword and we're at the beginning of line,
 			// so we have to store line number.
-			U16 line = nextLineNumber();
-			if (!writeLineNumber(line)) {
+			if (!writeLineNumber(0, true)) {
 				return false;
 			}
 		}
@@ -527,29 +548,13 @@ namespace bas
 				writeByte(c);
 			}
 		}
+		// Close line
+		writeLastLineBytes();
 		// Success escape from REM means that we need to process next line
 		// as new one.
 		_ctx.lineBegin = true;
 		return true;
 	}
-	
-	//
-	
-	U16 BasicTextParser::nextLineNumber()
-	{
-		U16 next_line = _ctx.basicLineNumber;
-		if (next_line == 0) {
-			next_line = 10;	// defaulting to 10
-		} else {
-			if (!_ctx.doNotIncrementNextLine) {
-				next_line += _ctx.basicLineStep;
-			} else {
-				_ctx.doNotIncrementNextLine = false;
-			}
-		}
-		return next_line;
-	}
-	
 	
 	// MARK: - Capture sequences
 	
@@ -588,7 +593,7 @@ namespace bas
 	{
 		if (_ctx.pass > 1) {
 			_output.push_back(b);
-			printf(">>> %02x    %lu\n", b, _output.size());
+			//printf(">>> %02x    %lu\n", b, _output.size());
 		}
 	}
 	
@@ -596,38 +601,63 @@ namespace bas
 	{
 		if (_ctx.pass > 1) {
 			_output.append(range);
-			printf(">>> ");
-			for (auto b: range) {
-				printf("%02x ", b);
-			}
-			printf("     %lu\n", _output.size());
+			//printf(">>> ");
+			//for (auto b: range) {
+			//	printf("%02x ", b);
+			//}
+			//printf("     %lu\n", _output.size());
 		}
 	}
 	
-	bool BasicTextParser::writeLineNumber(int number)
+	U16 BasicTextParser::currentBasicLineNumber()
 	{
-		if (number < 1 || number > 9999) {
-			_log->error(errInfoLC(), "Wrong line number.");
+		U16 n = _ctx.basicLineNumber;
+		if (n == 0) {
+			n = _options.initialLineNumber;
+		}
+		return n;
+	}
+	
+	bool BasicTextParser::writeLineNumber(int number, bool automatic)
+	{
+		// Validate provided number.
+		if (!automatic && (number < 1 || number > 9999)) {
+			_log->error(errInfoLC(), "Line number `" + std::to_string(number) + "` is out of allowed range (1 to 9999).");
 			return false;
 		}
-		U16 n = number & 0xFFFF;
-		if (n <= _ctx.basicLineNumber) {
-			if (n == _ctx.basicLineNumber) {
-				_log->error(errInfoLC(), "Line number is equal to previous one.");
-			} else {
-				_log->error(errInfoLC(), "Line number is lesser than previous one.");
+		U16 line_number;
+		if (automatic) {
+			// Automatic line number
+			line_number = currentBasicLineNumber();
+			if (line_number > 9999) {
+				_log->error(errInfoLC(), "Automatically calculated line number is too big.");
+				return false;
 			}
-			return false;
+		} else {
+			// Explicit line number
+			line_number = number & 0xFFFF;
+			if (line_number <= _ctx.basicLastLineNumber) {
+				auto line_str = std::to_string(number);
+				if (line_number == _ctx.basicLastLineNumber) {
+					_log->error(errInfoLC(), "Line number `" + line_str + "` is equal to previous one.");
+				} else {
+					_log->error(errInfoLC(), "Line number `" + line_str + "` is lesser than previous one.");
+				}
+				return false;
+			}
 		}
 		
-		_ctx.basicLineNumber = n;
+		// Keep this line as last one and move current to the next automatic one
+		_ctx.basicLastLineNumber = line_number;
+		_ctx.basicLineNumber = line_number + _options.lineNumberIncrement;
 		_ctx.processedLines++;
 		
+		// Serialize line number...
 		if (_ctx.pass > 1) {
-			// Serialize line number...
-			// Write line number in BE
+			// Write 16bits line number in BE. We have to also make space for line length, which will be updated
+			// later in `writeLastLineBytes`.
 			auto end_last_line = _output.size();
-			byte line_bytes[4] = { (byte)(_ctx.basicLineNumber >> 8), (byte)(_ctx.basicLineNumber & 0xff), 0, 0 };
+			byte line_bytes[4] = { (byte)(line_number >> 8), (byte)(line_number & 0xff), 0, 0 };
 			writeRange(MakeRange(line_bytes));
 			// Capture point, where we need to write back size of this just started line
 			auto begin_last_line = _ctx.beginLineBytesOffset;
@@ -645,14 +675,24 @@ namespace bas
 	bool BasicTextParser::writeLastLineBytes()
 	{
 		if (_ctx.pass > 1) {
+			writeByte(Keywords::Code_ENT);
 			auto end_last_line = _output.size();
 			auto begin_last_line = _ctx.beginLineBytesOffset;
 			if (end_last_line > 0 && begin_last_line >= 4) {
 				U16 line_size = end_last_line - begin_last_line;
-				// we need to write back size of current line.
+				// we need to update size of current line. `writeLineNumber` function reserved
+				// two bytes at the beginning of the line.
 				_output.at(begin_last_line - 2) =  line_size       & 0xFF;
 				_output.at(begin_last_line - 1) = (line_size >> 8) & 0xFF;
 			}
+		}
+		return true;
+	}
+	
+	bool BasicTextParser::writeLineIsEmpty() const
+	{
+		if (_ctx.pass > 1) {
+			return _ctx.beginLineBytesOffset == _output.size();
 		}
 		return true;
 	}
@@ -662,11 +702,18 @@ namespace bas
 		int exponent;
 		long mantissa;
 		if (!dbl2spec(n, exponent, mantissa)) {
-			_log->error(errInfoLC(), "Exponent out of range (number is too big)");
+			_log->error(errInfoLC(), "Exponent is out of range (number is too big)");
 			return false;
 		}
-		// Text representation
-		writeRange(MakeRange(textual_representation));
+		if (!_options.shadowNumbers) {
+			// For regular processing write just available string representation.
+			writeRange(MakeRange(textual_representation));
+		} else {
+			// For "shadow" number just write zero character.
+			// This makes BASIC program shorter but still runable,
+			// but uneditable directly in ZX Spectrum.
+			writeByte('0');
+		}
 		
 		// Binary representation
 		byte b_repr[6];

@@ -15,6 +15,7 @@
 //
 
 #include <bastapir/BastapirDocument.h>
+#include <bastapir/common/ErrorLogging.h>
 
 namespace bastapir
 {
@@ -52,6 +53,16 @@ namespace bastapir
 		return _archiveBytes.byteRange();
 	}
 	
+	const std::string & BastapirDocument::outputFile() const
+	{
+		return _outputFile;
+	}
+	
+	bool BastapirDocument::hasOutputFile() const
+	{
+		return !_outputFile.empty();
+	}
+	
 	
 	// MARK: - Parser
 	
@@ -70,7 +81,7 @@ namespace bastapir
 	
 	bool BastapirDocument::doParseLine()
 	{
-		_tokenizer._debugInfo();
+		//_tokenizer._debugInfo();
 		_tokenizer.skipWhitespace();
 		char c = _tokenizer.charAt();
 		if (c == 0) {
@@ -91,6 +102,10 @@ namespace bastapir
 			}
 		} else if (command == "code") {
 			if (!doParseCmdCode()) {
+				return false;
+			}
+		} else if (command == "output") {
+			if (!doParseCmdOutput()) {
 				return false;
 			}
 		} else {
@@ -148,6 +163,19 @@ namespace bastapir
 		
 		_tapBuilder.addFile(entry);
 		
+		return true;
+	}
+	
+	bool BastapirDocument::doParseCmdOutput()
+	{
+		std::string path;
+		if (!captureString(path)) {
+			return false;
+		}
+		if (hasOutputFile()) {
+			_log->warning(errInfoLC(), "output file redeclaration.");
+		}
+		_outputFile = path;
 		return true;
 	}
 	

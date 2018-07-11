@@ -49,8 +49,8 @@ namespace bastapir
 			iterator	pos;
 			Range		line;
 			Range		capture;
-			bool		updateLineEnd;
 			size_t		lineNumber;
+			bool		updateLineEnd;
 		};
 		
 		struct PositionInfo
@@ -95,6 +95,9 @@ namespace bastapir
 		
 		/// Returns information about current position
 		PositionInfo positionInfo() const;
+		
+		/// Returns information about current position where `lineNumber` and `offsetAtLine` are increased by 1.
+		PositionInfo positionInfoForLog() const;
 		
 		// MARK: - Walking over string
 		

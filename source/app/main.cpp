@@ -30,12 +30,14 @@ int main(int argc, const char * argv[])
 	auto result = doc.processDocument(file);
 	if (result) {
 		auto bytes = doc.archiveBytes();
-		FILE * f = fopen(argv[2], "wb");
+		FILE * f = fopen(doc.hasOutputFile() ? doc.outputFile().c_str() : argv[2], "wb");
 		if (f) {
 			fwrite(bytes.data(), 1, bytes.size(), f);
 			fclose(f);
+		} else {
+			result = false;
 		}
 	}
-	
-	return 0;
+	printf("Result: %s\n", result ? "sukcez" : "failure");
+	return result ? 0 : 1;
 }

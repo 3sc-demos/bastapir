@@ -98,6 +98,14 @@ namespace bastapir
 		return pi;
 	}
 	
+	Tokenizer::PositionInfo Tokenizer::positionInfoForLog() const
+	{
+		PositionInfo pi;
+		pi.lineNumber   = 1 + _state.lineNumber;
+		pi.offsetAtLine = 1 + std::distance(_state.line.begin, _state.pos);
+		return pi;
+	}
+	
 	
 	// MARK: - Walking over string
 	

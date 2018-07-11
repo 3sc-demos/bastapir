@@ -30,6 +30,12 @@ namespace bastapir
 			SevError, SevWarning, SevInfo, SevDebug
 		};
 		
+		struct Info
+		{
+			int warningsCount;
+			int errorsCount;
+		};
+		
 		// Report error
 		virtual void error(const std::string & message) = 0;
 		virtual void error(const ErrorInfo & info, const std::string & message) = 0;
@@ -45,6 +51,10 @@ namespace bastapir
 		// Print debug information
 		virtual void debug(const std::string & message) = 0;
 		virtual void debug(const ErrorInfo & info, const std::string & message) = 0;
+		
+		// Information about errors
+		virtual Info getInfo() const = 0;
+		virtual void resetInfo() = 0;
 	};
 	
 	
@@ -75,6 +85,9 @@ namespace bastapir
 		virtual void info(const ErrorInfo & info, const std::string & message);
 		virtual void debug(const std::string & message);
 		virtual void debug(const ErrorInfo & info, const std::string & message);
+		
+		virtual ErrorLogging::Info getInfo() const;
+		virtual void resetInfo();
 
 	private:
 		
@@ -87,6 +100,8 @@ namespace bastapir
 		FILE * _err;
 		Severity _min_severity;
 		bool _close_streams;
+		
+		ErrorLogging::Info _info;
 	};
 	
 	// MARK: - Redirecting logger
@@ -110,7 +125,11 @@ namespace bastapir
 		virtual void debug(const std::string & message);
 		virtual void debug(const ErrorInfo & info, const std::string & message);
 		
+		virtual ErrorLogging::Info getInfo() const;
+		virtual void resetInfo();
+		
 	private:
 		std::vector<ErrorLogging*> _loggers;
+		ErrorLogging::Info _info;
 	};
 }

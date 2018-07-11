@@ -26,16 +26,16 @@ namespace bas
 	{
 	public:
 		
-		enum Variant
+		enum Dialect
 		{
-			Variant_48K,
-			Variant_128K
+			Dialect_48K,
+			Dialect_128K
 		};
 		
-		Keywords(Variant variant);
+		Keywords(Dialect dialect);
 		
-		void setVariant(Variant variant);
-		Variant variant() const;
+		void setDialect(Dialect dialect);
+		Dialect dialect() const;
 		
 		/// Looks whether there's a BASIC keyword at |begin| begin position. The |end| parameter defines end of
 		/// available string. Returns keyword's code or 0 if string at |begin| is unknown.
@@ -54,9 +54,17 @@ namespace bas
 		
 		struct Keyword
 		{
-			std::string primary;
-			std::string alternate;
+			std::string keyword;
+			bool special;
 			byte code;
+		};
+		
+		struct LongerKeywordPredicate
+		{
+			inline bool operator() (const Keyword & k1, const Keyword & k2)
+			{
+				return k1.keyword.size() > k2.keyword.size();
+			}
 		};
 		
 		struct EscapeCode
@@ -65,16 +73,15 @@ namespace bas
 			byte code;
 		};
 		
+		Dialect					_dialect;
 		std::vector<Keyword>	_keywords;
 		std::string 			_keywordsFirstChars;
 		std::vector<EscapeCode>	_escapeCodes;
-		Variant					_variant;
 		
+		void setupStructures(Dialect d);
 		
-		
-		static std::vector<Keyword> prepareKeywords(Variant v);
-		static std::vector<EscapeCode> prepareEscapeCodes(Variant v);
-		static std::string prepareKeywordsFirstChars(const std::vector<Keyword> & keywords);
+		static std::vector<Keyword> prepareKeywords(Dialect d);
+		static std::vector<EscapeCode> prepareEscapeCodes(Dialect d);
 	};
 	
 	

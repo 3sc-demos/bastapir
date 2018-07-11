@@ -34,11 +34,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		BF139B70206ADDE100A9027E /* test1.bastap */ = {isa = PBXFileReference; lastKnownFileType = text; path = test1.bastap; sourceTree = "<group>"; };
 		BF139B71206ADE6700A9027E /* Path.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Path.h; sourceTree = "<group>"; };
 		BF139B72206ADE7E00A9027E /* Path.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Path.cpp; sourceTree = "<group>"; };
 		BF139B74206AE08700A9027E /* Platform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Platform.h; sourceTree = "<group>"; };
-		BF139B76206AF35900A9027E /* demo1.bas */ = {isa = PBXFileReference; lastKnownFileType = text; path = demo1.bas; sourceTree = "<group>"; };
+		BF3A409820F505FF00F3249D /* test1.bastap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test1.bastap; sourceTree = "<group>"; };
+		BF3A409920F505FF00F3249D /* simple.bas */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = simple.bas; sourceTree = "<group>"; };
+		BF3A409A20F505FF00F3249D /* zmakebas-lines.bas */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "zmakebas-lines.bas"; sourceTree = "<group>"; };
+		BF3A409B20F505FF00F3249D /* test2.bastap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test2.bastap; sourceTree = "<group>"; };
+		BF3A409C20F698C000F3249D /* zmakebas-labels.bas */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "zmakebas-labels.bas"; sourceTree = "<group>"; };
+		BF3A409D20F698C100F3249D /* test3.bastap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test3.bastap; sourceTree = "<group>"; };
 		BF592E84206688440030CE19 /* ErrorLogging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ErrorLogging.h; sourceTree = "<group>"; };
 		BF592E8520668AF80030CE19 /* ErrorLogging.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ErrorLogging.cpp; sourceTree = "<group>"; };
 		BF592E8720668EAB0030CE19 /* SourceFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SourceFile.h; sourceTree = "<group>"; };
@@ -83,6 +87,12 @@
 		BF139B6E206ADD9300A9027E /* tests */ = {
 			isa = PBXGroup;
 			children = (
+				BF3A409820F505FF00F3249D /* test1.bastap */,
+				BF3A409B20F505FF00F3249D /* test2.bastap */,
+				BF3A409D20F698C100F3249D /* test3.bastap */,
+				BF3A409920F505FF00F3249D /* simple.bas */,
+				BF3A409A20F505FF00F3249D /* zmakebas-lines.bas */,
+				BF3A409C20F698C000F3249D /* zmakebas-labels.bas */,
 				BF139B6F206ADDA900A9027E /* test1 */,
 			);
 			name = tests;
@@ -92,8 +102,6 @@
 		BF139B6F206ADDA900A9027E /* test1 */ = {
 			isa = PBXGroup;
 			children = (
-				BF139B70206ADDE100A9027E /* test1.bastap */,
-				BF139B76206AF35900A9027E /* demo1.bas */,
 			);
 			path = test1;
 			sourceTree = "<group>";
