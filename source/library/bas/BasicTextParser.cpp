@@ -153,7 +153,6 @@ namespace bas
 					_log->error(errInfo(), "BASIC program is empty.");
 					return false;
 				}
-				writeLastLineBytes();
 				if (_output.empty()) {
 					_log->error(errInfo(), "No bytes were generated from BASIC program.");
 					return false;
@@ -177,17 +176,14 @@ namespace bas
 			_tokenizer.skipWhitespace();
 			const char c = _tokenizer.charAt();
 			if (c == 0) {
-				if (!writeLineIsEmpty()) {
-					// End of line, store new line character, if line was not empty...
-					writeLastLineBytes();
-				}
-				return true;
+				// End of line
+				break;
 			}
 			
 			// #### Comment
 			if (c == '#') {
 				// ignore rest of the line. This is source code comment
-				return true;
+				break;
 			}
 			
 			// #### Escape to next line
@@ -252,6 +248,8 @@ namespace bas
 			
 			// End of main loop. We can process next character now.
 		}
+		// In case of success, try to append 0xD & update line size.
+		writeLastLineBytes();
 		return true;
 	}
 	
@@ -550,8 +548,7 @@ namespace bas
 		}
 		// Close line
 		writeLastLineBytes();
-		// Success escape from REM means that we need to process next line
-		// as new one.
+		// Success escape from REM means that we need to process next line as new one.
 		_ctx.lineBegin = true;
 		return true;
 	}
@@ -656,43 +653,31 @@ namespace bas
 		if (_ctx.pass > 1) {
 			// Write 16bits line number in BE. We have to also make space for line length, which will be updated
 			// later in `writeLastLineBytes`.
-			auto end_last_line = _output.size();
 			byte line_bytes[4] = { (byte)(line_number >> 8), (byte)(line_number & 0xff), 0, 0 };
 			writeRange(MakeRange(line_bytes));
 			// Capture point, where we need to write back size of this just started line
-			auto begin_last_line = _ctx.beginLineBytesOffset;
 			_ctx.beginLineBytesOffset = _output.size();
-			if (end_last_line > 0 && begin_last_line >= 4) {
-				U16 line_size = end_last_line - begin_last_line;
-				// we need to write back size of current line.
-				_output.at(begin_last_line - 2) =  line_size       & 0xFF;
-				_output.at(begin_last_line - 1) = (line_size >> 8) & 0xFF;
-			}
+			_ctx.lineContainsBytes = true;
 		}
 		return true;
 	}
 	
 	bool BasicTextParser::writeLastLineBytes()
 	{
-		if (_ctx.pass > 1) {
+		if (_ctx.lineContainsBytes) {
+			// Write new line character
 			writeByte(Keywords::Code_ENT);
+			// Update line size
 			auto end_last_line = _output.size();
 			auto begin_last_line = _ctx.beginLineBytesOffset;
 			if (end_last_line > 0 && begin_last_line >= 4) {
 				U16 line_size = end_last_line - begin_last_line;
 				// we need to update size of current line. `writeLineNumber` function reserved
-				// two bytes at the beginning of the line.
+				// two bytes at the beginning of the line which has to be updated.
 				_output.at(begin_last_line - 2) =  line_size       & 0xFF;
 				_output.at(begin_last_line - 1) = (line_size >> 8) & 0xFF;
 			}
-		}
-		return true;
-	}
-	
-	bool BasicTextParser::writeLineIsEmpty() const
-	{
-		if (_ctx.pass > 1) {
-			return _ctx.beginLineBytesOffset == _output.size();
+			_ctx.lineContainsBytes = false;
 		}
 		return true;
 	}
@@ -705,17 +690,18 @@ namespace bas
 			_log->error(errInfoLC(), "Exponent is out of range (number is too big)");
 			return false;
 		}
+		
+		// Write textual representation
 		if (!_options.shadowNumbers) {
 			// For regular processing write just available string representation.
 			writeRange(MakeRange(textual_representation));
 		} else {
-			// For "shadow" number just write zero character.
-			// This makes BASIC program shorter but still runable,
-			// but uneditable directly in ZX Spectrum.
+			// For "shadow" number just write zero character and keep its binary representation.
+			// This makes BASIC shorter and still runable, but uneditable by ZX Spectrum.
 			writeByte('0');
 		}
 		
-		// Binary representation
+		// Write binary representation
 		byte b_repr[6];
 		b_repr[0] = Keywords::Code_NUM;
 		b_repr[1] = exponent;

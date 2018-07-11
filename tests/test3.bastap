@@ -1,4 +1,4 @@
 # This is comment
 
-basic "zmakebas-labels.bas" zmakebas
+basic "zmakebas-labels.bas" " "
 output "test3.tap"

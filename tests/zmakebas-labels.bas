@@ -5,7 +5,7 @@
 
 @autostart:
 
-rem zmakebas demo
+rem zmakebasdemo
 
 gosub @init
 gosub @header

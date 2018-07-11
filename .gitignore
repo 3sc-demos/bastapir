@@ -1,6 +1,9 @@
 # Prerequisites
 *.d
 
+# TAP files
+*.tap
+
 # Compiled Object files
 *.slo
 *.lo

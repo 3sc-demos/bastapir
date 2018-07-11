@@ -149,9 +149,6 @@ namespace bas
 		/// Returns false if number |n| cannot be serialized.
 		bool writeNumber(double n, const std::string & textual_representation);
 		
-		/// Returns true if currently processed line doesn't produce output bytes.
-		bool writeLineIsEmpty() const;
-		
 		
 		// MARK: - Variable management
 		
@@ -205,6 +202,7 @@ namespace bas
 			U16 processedLines = 0;
 			size_t beginLineBytesOffset = 0;
 			bool lineBegin = true;
+			bool lineContainsBytes = false;
 		};
 		CTX _ctx;
 		
