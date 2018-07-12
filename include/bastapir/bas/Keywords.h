@@ -22,23 +22,37 @@ namespace bastapir
 {
 namespace bas
 {
+	/// The `Keywords` class is translating textual BASIC keywords to byte codes.
+	/// The class also contains table for converting escape codes suppored in
+	/// BASIC strings to byte codes. For example, you can use "\a" to generate
+	/// UDG character "A".
+	///
+	/// The instance must be initialized for one of supported BASIC dialects.
 	class Keywords
 	{
 	public:
 		
+		// MARK: - Public interface
+		
+		/// BASIC dialect
 		enum Dialect
 		{
 			Dialect_48K,
 			Dialect_128K
 		};
 		
+		/// Constructs Keywords for given |dialect|
 		Keywords(Dialect dialect);
 		
+		/// Changes dialect of keywords. The method also regenerates internal
+		/// keywords & escape codes tables.
 		void setDialect(Dialect dialect);
+		
+		/// Returns dialect assigned to Keywords object.
 		Dialect dialect() const;
 		
 		/// Looks whether there's a BASIC keyword at |begin| begin position. The |end| parameter defines end of
-		/// available string. Returns keyword's code or 0 if string at |begin| is unknown.
+		/// available string. Returns keyword's code or 0 if string at |begin| is not a keyword.
 		byte findKeyword(const Tokenizer::iterator begin, const Tokenizer::iterator end, size_t & out_matched_size) const;
 		
 		/// Looks whether there's an string escape code at |begin| position. The |end| parameter defines end of
@@ -52,13 +66,17 @@ namespace bas
 		
 	private:
 		
+		// MARK: - Private interface
+		
+		/// Internal structure representing BASIC keyword
 		struct Keyword
 		{
-			std::string keyword;
-			bool special;
-			byte code;
+			std::string keyword;		// an actual keyword
+			bool special;				// if true, keyword contains non-alpha characters
+			byte code;					// translated code
 		};
 		
+		/// Sort predicate for sorting Keywords by length. Longer keywords are first.
 		struct LongerKeywordPredicate
 		{
 			inline bool operator() (const Keyword & k1, const Keyword & k2)
@@ -67,20 +85,31 @@ namespace bas
 			}
 		};
 		
+		/// Internal structure representing escaped string sequence.
+		/// For example, \t is translated to UDG character T
 		struct EscapeCode
 		{
-			std::string sequence;
-			byte code;
+			std::string sequence;		// sequence of characters after backslash.
+			byte code;					// translated code
 		};
 		
+		/// Stored BASIC dialect
 		Dialect					_dialect;
+		/// All BASIC keywords
 		std::vector<Keyword>	_keywords;
+		/// Unique first characters from each keyword. The string helps
+		/// with keywords search.
 		std::string 			_keywordsFirstChars;
+		/// All escape codes
 		std::vector<EscapeCode>	_escapeCodes;
 		
+		/// Setups internal structures for given BASIC dialect.
 		void setupStructures(Dialect d);
 		
+		/// Prepares & returns list of Keyword structures for given BASIC dialect.
 		static std::vector<Keyword> prepareKeywords(Dialect d);
+		
+		/// Prepares & returns list of EscapeCode structures for given BASIC dialect.
 		static std::vector<EscapeCode> prepareEscapeCodes(Dialect d);
 	};
 	

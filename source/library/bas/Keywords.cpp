@@ -294,12 +294,12 @@ namespace bas
 	
 	static const char * s_EscapeChars[] =
 	{
-		// block graphic
+		// Block graphic
 		"  ", " '", "' ", "''", " .", " :", "'.", "':",
 		". ", ".'", ": ", ":'", "..", ".:", ":.", "::",
-		// udg
+		// UDG
 		"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
-		"l", "m", "n", "o", "p", "q", "r", "s",
+		"l", "m", "n", "o", "p", "q", "r", "s", "t", "u",
 		// End of table
 		nullptr
 	};
@@ -318,10 +318,6 @@ namespace bas
 				break;
 			}
 			table.push_back(EscapeCode { sequence, code++ });
-		}
-		if (dialect == Dialect_48K) {
-			table.push_back(EscapeCode {"t", 0xA3});	// UDG "T" for 48k
-			table.push_back(EscapeCode {"u", 0xA4});	// UDG "U" for 48k
 		}
 		table.push_back(EscapeCode {"*", 0x7F});		// copyright sign
 		table.push_back(EscapeCode {"`", 0x60});		// pound sign
