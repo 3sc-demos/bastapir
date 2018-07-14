@@ -22,11 +22,27 @@ namespace bastapir
 {
 	// MAR: - PathComponents
 	
+	/// The `PathComponents` contains various information parsed
+	/// from full file or directory path.
 	struct PathComponents
 	{
+		/// Parent directory. Examples:
+		/// - If path is `/tmp/text.txt`, then directory is `/tmp`
+		/// - If path is `text.txt`, then directory is empty.
 		std::string directory;
+		/// File or directory name. Examples:
+		/// - If path is `/tmp/text.txt`, then file name  is `text.txt`
+		/// - If path is `text.txt`, then file name is `text.txt`.
 		std::string fileName;
+		/// File name without an extension. Examples:
+		/// - If path is `/tmp/text.txt`, then property is `text`
+		/// - If path is `text.txt`, then property is `text`.
+		/// - If path is `text.something.txt`, then property is `text.something`.
 		std::string fileNameNoExt;
+		/// Contains file extension. Examples:
+		/// - If path is `/tmp/text.txt`, then extension is `txt`
+		/// - If path is `text.txt`, then extension is `txt`.
+		/// - If path is `text.something.txt`, then extension is `txt`.
 		std::string extension;
 	};
 	
@@ -44,7 +60,8 @@ namespace bastapir
 		const std::string path;
 		
 		/// Returns PathComponents parsed from path stored in this object.
-		/// Note that function
+		/// Note that function doesn't cache components internally, so each call for components
+		/// will parse stored path.
 		PathComponents pathComponents() const;
 		
 		/// Converts path in any format to platform specific path.
@@ -54,10 +71,7 @@ namespace bastapir
 		static PathComponents components(const std::string & any_path);
 		
 		/// Contains directory separator used on current platform.
-		static const std::string directorySeparator;
-		
-	private:
-		
+		static const std::string directorySeparator;		
 	};
 	
 } // bastapir

@@ -73,7 +73,7 @@ namespace bas
 		};
 		
 		/// Construcst BasicTextParser object. Parameter |log| is required and you have to provide
-		/// error logging facility. You can also specify a dialect of BASIC dialect.
+		/// error logging facility. You can also specify a dialect of BASIC (48K or 128K).
 		BasicTextParser(ErrorLogging * log, Keywords::Dialect dialect = Keywords::Dialect_48K);
 		
 		/// Sets options structure to the parser.
@@ -107,23 +107,37 @@ namespace bas
 
 		// MARK: - Private parser
 		
+		/// Main parser function
 		bool doParse();
+		
+		/// Parses one line in the document
 		bool doParseLine();
 		
+		/// Parses line number at the beginning of line
 		bool doParseLineNumber();
+		/// Parses number in BASIC source code.
 		bool doParseNumber(bool as_binary);
+		/// Parses variables injected to the code (e.g. @SomeSymbol)
 		bool doParseVariable(bool is_line_begin);
+		/// Parses string in BASIC format
 		bool doParseString();
+		/// Parses back-slashes at the end of line.
 		bool doParseLineEscape(bool is_line_begin);
+		/// Parses keywords or characters in the rest of the document.
 		bool doParseKeywords(bool is_line_begin);
+		/// Parses REM comment
 		bool doParseREM();
 
 		/// Returns current BASIC line number.
 		U16 currentBasicLineNumber();
 		
+		/// Captures range for name of variable
 		Tokenizer::Range captureVariableName();
+		/// Captures range for number
 		Tokenizer::Range captureNumber();
+		/// Captures range for hexadecimal number
 		Tokenizer::Range captureHexadecimalNumber();
+		/// Captures range for binary number
 		Tokenizer::Range captureBinaryNumber();
 		
 		
@@ -181,29 +195,46 @@ namespace bas
 		
 		// MARK: - Members
 		
+		/// Internal type for [name: variable] map.
 		typedef std::map<std::string, Variable> VarMap;
 		
+		/// Logging facility.
 		ErrorLogging * _log;
+		/// Information about source file.
 		SourceFileInfo _sourceFileInfo;
 		
+		/// Parser's options
 		Options _options;
+		/// Constants injected into the BASIC
 		VarMap _constants;
+		/// Variables & line number symbos.
 		VarMap _variables;
+		/// Keywords helper
 		Keywords _keywords;
 		
+		/// String tokenizer
 		Tokenizer _tokenizer;
 		
 		/// Private context structure.
 		struct CTX
 		{
+			/// Parser's pass. Must be 1 or 2
 			U16 pass = 0;
+			/// Current basic line number
 			U16 basicLineNumber = 0;
+			/// Last fully serialized line number
 			U16 basicLastLineNumber = 0;
+			/// Count of generated BASIC lines
 			U16 processedLines = 0;
+			/// Offset to `_output` marking beginning of current BASIC line
 			size_t beginLineBytesOffset = 0;
+			/// If true, then parser is at the beginning of line. In this state,
+			/// numeric sequence is interpreted as an exact line number.
 			bool lineBegin = true;
+			/// If true, then current line really generates BASIC program bytes.
 			bool lineContainsBytes = false;
 		};
+		/// Parser's context
 		CTX _ctx;
 		
 		/// Returns new context for given pass.
@@ -213,7 +244,7 @@ namespace bas
 			return ctx;
 		}
 		
-		/// Output bytes.
+		/// Output BASIC program bytes.
 		ByteArray _output;
 	};
 	

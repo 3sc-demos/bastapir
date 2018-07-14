@@ -137,7 +137,6 @@ namespace bastapir
 		if (!isEnd()) {
 			char c = *(_state.pos++);
 			if (c == 0) {
-				// TODO: throw an error
 				if (_log) {
 					_log->error("Tokenizer: NUL character detected in string.");
 				}
@@ -208,7 +207,6 @@ namespace bastapir
 				// Handle crappy MS-DOS & Descendants
 				c = realGetChar();
 				if (c != '\n') {
-					// TODO: throw an error, this is not right combination
 					if (_log) {
 						_log->error("Tokenizer: Invalid CR-LF sequence detected.");
 					}
@@ -253,7 +251,6 @@ namespace bastapir
 				return false;
 			}
 			if (!function(c)) {
-				// rollback, because received character did not pass test.
 				return true;
 			}
 			movePosition();

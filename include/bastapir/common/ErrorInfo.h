@@ -20,12 +20,22 @@
 
 namespace bastapir
 {
+	/// The `ErrorInfo` structure holds information about source file
+	/// where the error occured.
 	struct ErrorInfo
 	{
+		/// File name of source file.
+		/// If string is empty, then it's considered that structure doesn't
+		/// contain information about error.
 		std::string sourceFile;
+		/// Line where the error occured.
+		/// If value is equal to 0, then the line is not known.
 		size_t line 	= 0;
+		/// Column in the line, where the error occured.
+		/// If value is equal to 0, then the column is not known.
 		size_t column	= 0;
 		
+		/// Returns true if structure contains a valid information.
 		bool hasInfo() const
 		{
 			return !sourceFile.empty();

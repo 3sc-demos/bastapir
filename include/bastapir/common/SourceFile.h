@@ -33,6 +33,7 @@ namespace bastapir
 		
 		/// Path to the file
 		std::string path;
+		
 		/// Opening mode
 		Mode mode;
 		
